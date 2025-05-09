@@ -68,3 +68,18 @@ Before you start, ensure you have the following installed on your machine:
    ```bash
    git clone https://github.com/yourusername/event-booking-system.git
    cd event-booking-system/frontend
+
+---
+
+### ✅ Commit Message Format (Conventional Commits)
+
+All commit messages must follow this format:
+
+
+#### Examples:
+
+- `feat(auth): add login button`
+- `fix(api): resolve 500 error on fetch`
+- `chore(lint): add ESLint and Prettier setup`
+
+Allowed types: `feat`, `fix`, `chore`, `refactor`, `style`, `test`, `docs`, `ci`, `perf`
