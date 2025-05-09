@@ -1,0 +1,28 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "This is a **full-stack event booking system** that allows users to browse and book events, manage their bookings, and provides an admin panel for event management. The app supports user authentication, role-based access (Admin/User), and a simple, responsive design.",
+  "main": "index.js",
+  "scripts": {
+    "prepare": "husky install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mohamedmedhat/ATC_01007193695.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/mohamedmedhat/ATC_01007193695/issues"
+  },
+  "homepage": "https://github.com/mohamedmedhat/ATC_01007193695#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "husky": "^8.0.0",
+    "sonar-scanner": "^3.1.0"
+  }
+}
