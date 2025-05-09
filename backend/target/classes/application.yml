@@ -1,3 +1,5 @@
 spring:
   application:
     name: eventBooking
+  active:
+    profiles: dev
