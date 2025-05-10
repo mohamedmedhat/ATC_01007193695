@@ -11,3 +11,6 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: create-drop
+  app:
+  jwt-secret: whrjbfwhrfihrihfri
+  jwt-expiration-ms: 100000
