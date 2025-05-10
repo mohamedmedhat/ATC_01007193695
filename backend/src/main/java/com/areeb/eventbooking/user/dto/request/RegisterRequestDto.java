@@ -3,8 +3,12 @@ package com.areeb.eventbooking.user.dto.request;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
+import java.util.Set;
+
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
+import com.areeb.eventbooking.shared.enums.Role;
 
 public record RegisterRequestDto(
         @NotBlank
@@ -15,13 +19,15 @@ public record RegisterRequestDto(
         String email,
         @NotBlank
         @Size(min = 8, max = 15)
-        String password
+        String password,
+        Set<Role> roles
 ) {
     public static RegisterRequestDto sanitize(RegisterRequestDto dto) {
         return new RegisterRequestDto(
                 Jsoup.clean(dto.name, Safelist.none()),
-                Jsoup.clean(dto.email, Safelist.none()),
-                Jsoup.clean(dto.password, Safelist.none())
+                dto.email.replaceAll("<.*?>", ""),
+                Jsoup.clean(dto.password, Safelist.none()),
+                dto.roles.isEmpty() ? Set.of(Role.USER) : dto.roles
         );
     }
 }
