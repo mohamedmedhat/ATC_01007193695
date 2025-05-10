@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
 import com.areeb.eventbooking.user.User;
 
@@ -13,6 +14,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+@Component
 public class JwtUtil {
     @Value("${spring.app.jwt-secret}")
     private String JWT_SECRET;

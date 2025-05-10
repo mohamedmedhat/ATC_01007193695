@@ -1,22 +1,35 @@
 package com.areeb.eventbooking.user;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 import java.util.Set;
 import java.util.UUID;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.areeb.eventbooking.shared.enums.Role;
 import com.areeb.eventbooking.user.dto.request.RegisterRequestDto;
 import com.areeb.eventbooking.user.dto.response.LoginResponseDto;
 import com.areeb.eventbooking.user.dto.response.RegisterResponseDto;
+import com.areeb.eventbooking.util.EncryptionUtil;
 
 @ExtendWith(SpringExtension.class)
 public class UserMapperTest {
     private final UserMapper userMapper = new UserMapper();
+
+    @Mock
+    private EncryptionUtil encryptionService;
+
+    @BeforeEach
+    void setup() {
+        when(encryptionService.encodePassword(anyString())).thenAnswer(invocation -> invocation.getArgument(0));
+    }
 
     @Test
     void shouldMapUserToRegisterResponseDtoCorrectly() {
@@ -63,8 +76,10 @@ public class UserMapperTest {
                 "<i>12345678</i>",
                 Set.of(Role.ADMIN));
 
+        String encryptedPassword = encryptionService.encodePassword("12345678");
+
         // Act
-        User user = userMapper.toUser(request);
+        User user = userMapper.toUser(request, encryptedPassword);
 
         // Assert: Jsoup should remove the tags
         assertEquals("MaliciousName", user.getName());
@@ -82,8 +97,10 @@ public class UserMapperTest {
                 "securePass123",
                 Set.of(Role.USER));
 
+        String encryptedPassword = encryptionService.encodePassword("securePass123");
+
         // Act
-        User user = userMapper.toUser(request);
+        User user = userMapper.toUser(request, encryptedPassword);
 
         // Assert
         assertEquals("Jane Doe", user.getName());
@@ -101,8 +118,10 @@ public class UserMapperTest {
                 "securePass123",
                 Set.of());
 
+        String encryptedPassword = encryptionService.encodePassword("securePass123");
+
         // Act
-        User user = userMapper.toUser(request);
+        User user = userMapper.toUser(request, encryptedPassword);
 
         // Assert
         assertEquals("Jane Doe", user.getName());

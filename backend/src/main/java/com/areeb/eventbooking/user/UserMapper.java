@@ -1,5 +1,6 @@
 package com.areeb.eventbooking.user;
 
+
 import org.springframework.stereotype.Component;
 
 import com.areeb.eventbooking.user.dto.request.RegisterRequestDto;
@@ -8,7 +9,6 @@ import com.areeb.eventbooking.user.dto.response.RegisterResponseDto;
 
 @Component
 public class UserMapper {
-
     RegisterResponseDto toRegisterResponseDto(User user) {
         return new RegisterResponseDto(
                 user.getId(),
@@ -24,12 +24,12 @@ public class UserMapper {
                 refresh_token);
     }
 
-    User toUser(RegisterRequestDto data) {
+    User toUser(RegisterRequestDto data, String encryptedPassword) {
         RegisterRequestDto sanitizedData = RegisterRequestDto.sanitize(data);
         User user = new User();
         user.setName(sanitizedData.name());
         user.setEmail(sanitizedData.email());
-        user.setPassword(sanitizedData.password());
+        user.setPassword(encryptedPassword);
         user.setRoles(sanitizedData.roles());
         return user;
     }
