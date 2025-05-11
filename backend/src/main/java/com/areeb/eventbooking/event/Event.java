@@ -38,6 +38,7 @@ public class Event {
 
     private String name;
     private String description;
+    private String category;
     private String date;
     private String time;
     private String venue;
