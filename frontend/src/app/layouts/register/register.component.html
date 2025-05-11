@@ -1,0 +1,48 @@
+<div class="register-wrapper">
+  <div class="register-card" [formGroup]="form">
+    <form (ngSubmit)="onSubmit()">
+      <h1 class="title">Create Account</h1>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="username" placeholder="Your username" />
+        <mat-icon matSuffix>person</mat-icon>
+        <mat-error *ngIf="form.get('username')?.hasError('required')">
+          Username is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" placeholder="Email address" />
+        <mat-icon matSuffix>mail</mat-icon>
+        <mat-error *ngIf="form.get('email')?.hasError('email')"> Enter a valid email </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          formControlName="password"
+          type="password"
+          placeholder="Choose a password"
+        />
+        <mat-icon matSuffix>lock</mat-icon>
+        <mat-error *ngIf="form.get('password')?.hasError('minlength')">
+          Minimum 6 characters
+        </mat-error>
+      </mat-form-field>
+
+      <mat-checkbox formControlName="acceptTerms" class="checkbox">
+        I accept the terms and conditions
+      </mat-checkbox>
+      <div *ngIf="form.get('acceptTerms')?.invalid && form.touched" class="checkbox-error">
+        You must accept the terms.
+      </div>
+
+      <button mat-raised-button color="primary" class="register-btn" [disabled]="form.invalid">
+        Register
+      </button>
+    </form>
+  </div>
+</div>
