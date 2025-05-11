@@ -2,6 +2,10 @@
 
 This is a **full-stack event booking system** that allows users to browse and book events, manage their bookings, and provides an admin panel for event management. The app supports user authentication, role-based access (Admin/User), and a simple, responsive design.
 
+![app-uml](https://github.com/user-attachments/assets/11eb26e0-d3ff-4b55-b1d1-554299bad6cb)
+![app-flowchart](https://github.com/user-attachments/assets/97eddafd-1d27-4602-9cf8-839b5b2266fc)
+
+
 ### Features
 
 - **Frontend**: Built using **Angular** for a smooth and interactive user experience.
