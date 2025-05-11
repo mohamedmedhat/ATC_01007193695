@@ -36,7 +36,7 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Event> event;
+    private Set<Event> event = new HashSet<>();
     
     @Column(name = "created_at")
     private LocalDateTime createdAt;

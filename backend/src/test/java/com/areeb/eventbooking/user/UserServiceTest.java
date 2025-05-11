@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -69,7 +70,7 @@ public class UserServiceTest {
 
         String encryptedPassword = "encodedPass";
 
-        User user = new User(id, "User", "user@mail.com", encryptedPassword, Set.of(Role.USER), LocalDateTime.now());
+        User user = new User(id, "User", "user@mail.com", encryptedPassword, Set.of(Role.USER), Set.of(), LocalDateTime.now());
 
         when(userRepository.countByEmail("user@mail.com")).thenReturn(0L);
         when(encryptionService.encodePassword("password123")).thenReturn(encryptedPassword);
@@ -96,7 +97,7 @@ public class UserServiceTest {
     @Test
     void shouldLoginSuccessfullyWithCorrectCredential() {
         LoginRequestDto dto = new LoginRequestDto("user@mail.com", "password123");
-        User user = new User(id, "User", "user@mail.com", "hashedPassword", Set.of(Role.USER), LocalDateTime.now());
+        User user = new User(id, "User", "user@mail.com", "hashedPassword", Set.of(Role.USER), Set.of(), LocalDateTime.now());
 
         when(userRepository.findByEmail("user@mail.com")).thenReturn(Optional.of(user));
         when(encryptionService.comparePassword("password123", "hashedPassword")).thenReturn(true);
@@ -133,7 +134,7 @@ public class UserServiceTest {
     @Test
     void shouldFailLoginWithInvalidCredentials() {
         LoginRequestDto dto = new LoginRequestDto("user@mail.com", "wrongPassword");
-        User user = new User(id, "User", "user@mail.com", "correctPassword", Set.of(Role.USER), LocalDateTime.now());
+        User user = new User(id, "User", "user@mail.com", "correctPassword", Set.of(Role.USER), Set.of(), LocalDateTime.now());
 
         when(userRepository.findByEmail("user@mail.com")).thenReturn(Optional.of(user));
         when(encryptionService.comparePassword("wrongPassword", "correctPassword")).thenReturn(false);
@@ -143,7 +144,7 @@ public class UserServiceTest {
 
     @Test
     void shouldReturnUserSuccessfully() {
-        User user = new User(id, "User", "user@mail.com", "encodedPass", Set.of(Role.USER), LocalDateTime.now());
+        User user = new User(id, "User", "user@mail.com", "encodedPass", Set.of(Role.USER), Set.of(), LocalDateTime.now());
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
         User result = userServiceImpl.getUser(id);
         assertEquals("User", result.getName());

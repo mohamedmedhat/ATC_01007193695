@@ -3,6 +3,7 @@ package com.areeb.eventbooking.event;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -46,7 +47,7 @@ public class Event {
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     @Column(name = "images")
-    private Set<Image> images;
+    private Set<Image> images = new HashSet<>();
 
     @ManyToOne
     @Column(name = "user_id", nullable = false)

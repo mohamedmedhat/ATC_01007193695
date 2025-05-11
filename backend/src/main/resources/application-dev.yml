@@ -14,3 +14,11 @@ spring:
   app:
     jwt-secret: whrjbfwhrfihrihfri
     jwt-expiration-ms: 100000
+
+
+cloudinary:
+  url: ${CLOUDINARY_URL}
+  name: ${CLOUD_NAME}
+  api:
+    key: ${CLOUD_API_KEY}
+    secret: ${CLOUD_API_SECRET}
