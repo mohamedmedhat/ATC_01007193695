@@ -5,6 +5,17 @@ This is a **full-stack event booking system** that allows users to browse and bo
 ![app-uml](https://github.com/user-attachments/assets/11eb26e0-d3ff-4b55-b1d1-554299bad6cb)
 ![app-flowchart](https://github.com/user-attachments/assets/97eddafd-1d27-4602-9cf8-839b5b2266fc)
 
+## 📬 Postman Collection
+
+You can easily test the API using the provided Postman collection.
+
+- 🔗 [evntBooking.json](https://github.com/user-attachments/files/20174575/evntBooking.json)
+
+- 📂 Import this file into Postman to access all API endpoints with example requests.
+
+> 💡 **How to import**: Open Postman → Click `Import` → Choose the downloaded `.json` file.
+
+---
 
 ### Features
 
