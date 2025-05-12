@@ -18,8 +18,10 @@ import com.areeb.eventbooking.util.CookieUtil;
 import com.areeb.eventbooking.util.EncryptionUtil;
 import com.areeb.eventbooking.util.JwtUtil;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
@@ -66,7 +68,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUser(UUID id) {
         return this.userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("user with id: " + id + "not found"));
+                .orElseThrow(() -> new UserNotFoundException("user with id: " + id + " not found"));
     }
 
     public boolean existsByEmail(String email) {
@@ -75,7 +77,7 @@ public class UserServiceImpl implements UserService {
 
     public User getUserByEmail(String email) {
         return this.userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("user with email" + email + "not found"));
+                .orElseThrow(() -> new UserNotFoundException("user with email" + email + " not found"));
     }
 
 }

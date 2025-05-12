@@ -1,5 +1,6 @@
 package com.areeb.eventbooking.user;
 
+import com.areeb.eventbooking.event.Event;
 import com.areeb.eventbooking.shared.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,6 +34,10 @@ public class User {
     private String password;
     @Enumerated(value = EnumType.STRING)
     private Set<Role> roles = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Event> event = new HashSet<>();
+    
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 }
