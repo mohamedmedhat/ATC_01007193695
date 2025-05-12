@@ -1,16 +1,18 @@
 package com.areeb.eventbooking.event.dto.request;
 
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Set;
+
+import org.springframework.web.multipart.MultipartFile;
 
 public record EventRequestDto(
         String name,
         String description,
         String category,
-        Date date,
+        LocalDate date,
         String venue,
         BigDecimal price,
-        Set<String> images) {
+        Set<MultipartFile> images) {
 
 }

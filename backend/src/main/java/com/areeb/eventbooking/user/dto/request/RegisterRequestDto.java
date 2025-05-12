@@ -11,7 +11,7 @@ import org.jsoup.safety.Safelist;
 import com.areeb.eventbooking.shared.enums.Role;
 
 public record RegisterRequestDto(
-        @NotBlank @Size(min = 6, max = 40) String name,
+        @NotBlank @Size(min = 2, max = 40) String name,
         @NotBlank @Email String email,
         @NotBlank @Size(min = 8, max = 15) String password,
         Set<Role> roles) {
