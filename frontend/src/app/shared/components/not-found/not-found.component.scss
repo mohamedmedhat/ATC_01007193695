@@ -1,142 +1,537 @@
-$primary-color: #ff4e50;
-$secondary-color: #f9d423;
-$bg-gradient: linear-gradient(135deg, #f9f9fb, #e0eafc);
-$hover-background: #e64548;
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/_mixins' as *;
+@use '../../../../styles/_animations' as *;
 
 .not-found-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  height: 100vh;
-  background: $bg-gradient;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
   position: relative;
-  overflow: hidden;
-  padding: 2rem;
-  font-family: Poppins, sans-serif;
-  text-align: center;
+  background: $animated-gradient;
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+
+  // Animated particle overlay
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+      radial-gradient(circle, rgba(0, 184, 148, 0.05) 1px, transparent 1px),
+      radial-gradient(circle, rgba(0, 184, 148, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position:
+      0 0,
+      10px 10px;
+    animation: particleMove 120s linear infinite;
+  }
 }
 
 .ticket {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgb(0 0 0 / 10%);
-  width: 90%;
-  max-width: 400px;
+  width: 100%;
+  max-width: 500px;
   position: relative;
-  padding: 2rem;
-  animation: fade-in-up 0.8s ease-out;
+  transform-style: preserve-3d;
+  animation: ticketEntrance 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  z-index: 10;
+}
 
-  .ticket-content {
-    h1 {
-      font-size: 6rem;
-      color: $primary-color;
-      margin: 0;
-    }
+// Ticket Content Area
+.ticket-content {
+  padding: 50px 40px;
+  border-radius: 20px;
+  background: $glass-background;
+  backdrop-filter: blur($blur-effect);
+  -webkit-backdrop-filter: blur($blur-effect);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba($primary-color, 0.3),
+    inset 0 0 20px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
 
-    .message {
-      font-size: 1.75rem;
-      font-weight: 600;
-      color: #333;
-    }
-
-    .sub-message {
-      font-size: 1rem;
-      color: #666;
-      margin: 0.5rem 0 2rem;
-    }
-
-    .btn-glow {
-      display: inline-block;
-      padding: 0.8rem 1.6rem;
-      background: $primary-color;
-      color: #fff;
-      border-radius: 30px;
-      text-decoration: none;
-      font-weight: 600;
-      box-shadow: 0 0 15px rgb(255 78 80 / 60%);
-      transition: all 0.3s ease-in-out;
-
-      &:hover {
-        background: $hover-background;
-        box-shadow: 0 0 25px rgb(255 78 80 / 80%);
-      }
-    }
+  // Light scan effect
+  &::before {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: -100%;
+    width: 300%;
+    height: 300%;
+    background: linear-gradient(
+      to bottom right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.05) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(45deg);
+    animation: lightScan 5s linear infinite;
   }
 
-  .ticket-cut {
+  // Glowing background decorations
+  &::after {
     content: '';
     position: absolute;
     top: 50%;
-    right: -15px;
-    transform: translateY(-50%);
-    width: 30px;
-    height: 30px;
-    background: #f9f9fb;
-    border-radius: 50%;
-    box-shadow: inset 0 0 5px rgb(0 0 0 / 10%);
+    left: 50%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(
+      circle,
+      rgba($primary-color, 0.2) 0%,
+      rgba($primary-color, 0.1) 30%,
+      rgba($primary-color, 0) 70%
+    );
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    animation: pulse 4s ease-in-out infinite;
+  }
+
+  // 404 Text - Large with Neon Effect
+  h1 {
+    font-size: 120px;
+    font-weight: 800;
+    margin: 0;
+    line-height: 1;
+    background: linear-gradient(
+      to bottom,
+      $light-color 0%,
+      rgba(255, 255, 255, 0.8) 50%,
+      rgba(255, 255, 255, 0.6) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow:
+      0 0 10px rgba($primary-color, 0.7),
+      0 0 20px rgba($primary-color, 0.5),
+      0 0 30px rgba($primary-color, 0.3);
+    position: relative;
+    display: inline-block;
+    transform: perspective(1000px) rotateX(0deg);
+    transition: transform 1s;
+
+    // 3D hover effect
+    &:hover {
+      transform: perspective(1000px) rotateX(10deg);
+    }
+
+    // Holographic scan effect
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 0 15px rgba($primary-color, 0.8);
+      animation: scanEffect 2s linear infinite;
+    }
+  }
+
+  // Main Message
+  .message {
+    color: $light-color;
+    font-size: 28px;
+    font-weight: 600;
+    margin: 10px 0 20px;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    letter-spacing: 1px;
+    transform: translateZ(20px);
+    position: relative;
+
+    // Subtle glow effect
+    &::before {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      width: 40px;
+      height: 3px;
+      background: $primary-color;
+      border-radius: 3px;
+      transform: translateX(-50%);
+      box-shadow: 0 0 10px rgba($primary-color, 0.8);
+    }
+  }
+
+  // Sub Message
+  .sub-message {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 16px;
+    margin-bottom: 40px;
+    font-weight: 400;
+    line-height: 1.6;
+    max-width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0;
+    animation: fadeIn 0.8s ease-out 1s forwards;
   }
 }
 
+// Ticket Cut - Perforated Edge Effect
+.ticket-cut {
+  height: 40px;
+  width: 100%;
+  position: relative;
+  margin-top: 5px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background-image:
+      radial-gradient(
+        circle at 10px -5px,
+        transparent 12px,
+        $ticket-edge-color 12px,
+        $ticket-edge-color 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 30px -5px,
+        transparent 12px,
+        $ticket-edge-color 12px,
+        $ticket-edge-color 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 50px -5px,
+        transparent 12px,
+        $ticket-edge-color 12px,
+        $ticket-edge-color 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 70px -5px,
+        transparent 12px,
+        $ticket-edge-color 12px,
+        $ticket-edge-color 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 90px -5px,
+        transparent 12px,
+        $ticket-edge-color 12px,
+        $ticket-edge-color 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 110px -5px,
+        transparent 12px,
+        $ticket-edge-color 12px,
+        $ticket-edge-color 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 130px -5px,
+        transparent 12px,
+        $ticket-edge-color 12px,
+        $ticket-edge-color 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 150px -5px,
+        transparent 12px,
+        $ticket-edge-color 12px,
+        $ticket-edge-color 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 170px -5px,
+        transparent 12px,
+        $ticket-edge-color 12px,
+        $ticket-edge-color 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 190px -5px,
+        transparent 12px,
+        $ticket-edge-color 12px,
+        $ticket-edge-color 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 210px -5px,
+        transparent 12px,
+        $ticket-edge-color 12px,
+        $ticket-edge-color 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 230px -5px,
+        transparent 12px,
+        $ticket-edge-color 12px,
+        $ticket-edge-color 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 250px -5px,
+        transparent 12px,
+        $ticket-edge-color 12px,
+        $ticket-edge-color 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 270px -5px,
+        transparent 12px,
+        $ticket-edge-color 12px,
+        $ticket-edge-color 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 290px -5px,
+        transparent 12px,
+        $ticket-edge-color 12px,
+        $ticket-edge-color 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 310px -5px,
+        transparent 12px,
+        $ticket-edge-color 12px,
+        $ticket-edge-color 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 330px -5px,
+        transparent 12px,
+        $ticket-edge-color 12px,
+        $ticket-edge-color 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 350px -5px,
+        transparent 12px,
+        $ticket-edge-color 12px,
+        $ticket-edge-color 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 370px -5px,
+        transparent 12px,
+        $ticket-edge-color 12px,
+        $ticket-edge-color 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 390px -5px,
+        transparent 12px,
+        $ticket-edge-color 12px,
+        $ticket-edge-color 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 410px -5px,
+        transparent 12px,
+        $ticket-edge-color 12px,
+        $ticket-edge-color 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 430px -5px,
+        transparent 12px,
+        $ticket-edge-color 12px,
+        $ticket-edge-color 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 450px -5px,
+        transparent 12px,
+        $ticket-edge-color 12px,
+        $ticket-edge-color 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 470px -5px,
+        transparent 12px,
+        $ticket-edge-color 12px,
+        $ticket-edge-color 13px,
+        transparent 13px
+      ),
+      radial-gradient(
+        circle at 490px -5px,
+        transparent 12px,
+        $ticket-edge-color 12px,
+        $ticket-edge-color 13px,
+        transparent 13px
+      );
+    background-size: 20px 20px;
+    background-position: center bottom;
+  }
+}
+
+// Back to Home Button - Glowing Effect
+.btn-glow {
+  display: inline-block;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, $primary-color, darken($primary-color, 15%));
+  color: $light-color;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 50px;
+  border: none;
+  letter-spacing: 1px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow:
+    0 6px 15px rgba(0, 0, 0, 0.2),
+    0 0 15px rgba($primary-color, 0.5);
+  transform-style: preserve-3d;
+  z-index: 2;
+
+  // Animated gradient border
+  &::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    z-index: -1;
+    background: linear-gradient(
+      45deg,
+      $primary-color,
+      $secondary-color,
+      $accent-color,
+      $primary-color
+    );
+    background-size: 400% 400%;
+    border-radius: 50px;
+    animation: borderGradient 3s ease infinite;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  // Interactive effects
+  &:hover {
+    transform: translateY(-5px) scale(1.02) rotateX(10deg);
+    box-shadow:
+      0 12px 20px rgba(0, 0, 0, 0.3),
+      0 0 20px rgba($primary-color, 0.7);
+
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  &:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow:
+      0 5px 10px rgba(0, 0, 0, 0.2),
+      0 0 10px rgba($primary-color, 0.5);
+  }
+
+  // Ripple animation on click
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.7);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%, -50%);
+    transform-origin: 50% 50%;
+  }
+
+  &:focus:not(:active)::after {
+    animation: buttonRipple 1s ease-out;
+  }
+}
+
+// Floating Icons Animation
 .floating-icons {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  overflow: hidden;
   pointer-events: none;
+  z-index: 1;
 
   .icon {
     position: absolute;
+    display: block;
+    font-size: 3rem;
+    opacity: 0.5;
+    filter: drop-shadow(0 0 10px rgba($primary-color, 0.5));
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+  }
+
+  .🎭 {
+    left: 10%;
+    animation: float1 20s infinite;
+  }
+
+  .🎶 {
+    left: 25%;
+    top: 70%;
+    animation: float2 25s infinite;
+  }
+
+  .🎤 {
+    right: 20%;
+    top: 30%;
+    animation: float3 18s infinite;
+  }
+
+  .🎟️ {
+    right: 15%;
+    bottom: 20%;
+    animation: float4 22s infinite;
+  }
+}
+
+// Media Queries for Responsiveness
+@media (max-width: 576px) {
+  .ticket-content {
+    padding: 30px 20px;
+
+    h1 {
+      font-size: 80px;
+    }
+
+    .message {
+      font-size: 22px;
+    }
+
+    .sub-message {
+      font-size: 14px;
+      max-width: 95%;
+    }
+  }
+
+  .ticket-cut {
+    display: none; // Hide perforated edge on very small screens
+  }
+
+  .floating-icons .icon {
     font-size: 2rem;
-    animation: float-icon 6s infinite ease-in-out;
-    opacity: 0.2;
-
-    &:nth-child(1) {
-      top: 10%;
-      left: 10%;
-      animation-delay: 0s;
-    }
-
-    &:nth-child(2) {
-      top: 30%;
-      right: 15%;
-      animation-delay: 1s;
-    }
-
-    &:nth-child(3) {
-      bottom: 20%;
-      left: 20%;
-      animation-delay: 2s;
-    }
-
-    &:nth-child(4) {
-      bottom: 15%;
-      right: 10%;
-      animation-delay: 3s;
-    }
-  }
-}
-
-@keyframes fade-in-up {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
   }
 
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes float-icon {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-15px);
+  .btn-glow {
+    padding: 12px 28px;
+    font-size: 15px;
   }
 }

@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CommonModule } from '@angular/common';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -16,6 +17,7 @@ import { CommonModule } from '@angular/common';
     MatCheckboxModule,
     ReactiveFormsModule,
     CommonModule,
+    RouterLink,
   ],
   providers: [AuthService],
   templateUrl: './register.component.html',
@@ -25,6 +27,7 @@ import { CommonModule } from '@angular/common';
 export class RegisterComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
+  private router = inject(Router);
 
   form: FormGroup = this.fb.group({
     username: ['', Validators.required],
@@ -38,7 +41,10 @@ export class RegisterComponent {
 
     const { username, email, password } = this.form.value;
     this.authService.register(username, email, password).subscribe({
-      next: (res) => console.log('Registered!', res),
+      next: (res) => {
+        console.log('Registered!', res);
+        this.router.navigate(['/auth/login']);
+      },
       error: (err) => console.error('Register failed:', err),
     });
   }

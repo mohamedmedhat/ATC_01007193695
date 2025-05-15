@@ -1,1 +1,97 @@
-<p>admin works!</p>
+<!-- admin.component.html -->
+<div class="admin-container">
+  <div class="admin-header">
+    <h1>Event Management Dashboard</h1>
+    <div class="search-bar">
+      <input type="text" [(ngModel)]="searchQuery" placeholder="Search events..." />
+    </div>
+  </div>
+
+  <div class="admin-content">
+    <div class="form-section">
+      <div class="form-card">
+        <h2>{{ isEditing ? 'Edit Event' : 'Create New Event' }}</h2>
+        <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label for="event-title">Title</label>
+            <input id="event-title" type="text" formControlName="title" />
+          </div>
+
+          <div class="form-group">
+            <label for="event-description">Description</label>
+            <textarea id="event-description" formControlName="description" rows="3"></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="event-image-url">Image URL</label>
+              <input id="event-image-url" type="text" formControlName="imageUrl" />
+            </div>
+
+            <div class="form-group">
+              <label for="event-date">Date</label>
+              <input id="event-date" type="date" formControlName="date" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="event-price">Price ($)</label>
+              <input id="event-price" type="number" formControlName="price" />
+            </div>
+
+            <div class="form-group">
+              <label for="event-category">Category</label>
+              <select id="event-category" formControlName="category">
+                <option value="Music">Music</option>
+                <option value="Sports">Sports</option>
+                <option value="Arts">Arts</option>
+                <option value="Theater">Theater</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group checkbox-group">
+            <label> <input type="checkbox" formControlName="isBooked" /> Booked </label>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="submit-btn" [disabled]="!eventForm.valid">
+              {{ isEditing ? 'Update' : 'Create' }}
+            </button>
+            <button type="button" class="cancel-btn" (click)="resetForm()" *ngIf="isEditing">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="events-section">
+      <h2>All Events</h2>
+      <div class="events-grid">
+        <div class="event-card" *ngFor="let event of filteredEvents">
+          <div class="event-image">
+            <img [src]="event.imageUrl" [alt]="event.title" />
+          </div>
+          <div class="event-details">
+            <h3>{{ event.title }}</h3>
+            <p class="event-description">{{ event.description }}</p>
+            <div class="event-meta">
+              <span class="event-category">{{ event.category }}</span>
+              <span class="event-price">${{ event.price }}</span>
+              <span class="event-date">{{ event.date }}</span>
+              <span class="event-status" [class.booked]="event.isBooked">
+                {{ event.isBooked ? 'Booked' : 'Available' }}
+              </span>
+            </div>
+          </div>
+          <div class="event-actions">
+            <button class="edit-btn" (click)="editEvent(event)">Edit</button>
+            <button class="delete-btn" (click)="deleteEvent(event.id)">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

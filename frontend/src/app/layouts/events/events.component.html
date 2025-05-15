@@ -1,1 +1,94 @@
-<p>events works!</p>
+<div class="events-container">
+  <div class="controls">
+    <div class="filter-controls">
+      <select [(ngModel)]="selectedCategory" (change)="onFilterChange()" class="category-select">
+        <option *ngFor="let category of categories" [value]="category">
+          {{ category }}
+        </option>
+      </select>
+
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        (input)="onFilterChange()"
+        placeholder="Search events..."
+        class="search-input"
+      />
+    </div>
+
+    <div class="pagination-info">
+      Showing {{ getDisplayRange() }} of {{ filteredEvents.length }} events
+    </div>
+  </div>
+
+  <div class="cards-container">
+    @for (event of paginatedEvents; track $index) {
+      <app-card
+        [imageUrl]="event.images[0]"
+        [imageAlt]="'the image for event: ' + (event.name || '')"
+        [title]="event.name"
+        (navtoDetails)="navToDetail(event.id)"
+        (bookEvent)="bookEvent(event.id)"
+        [description]="event.description"
+        [price]="event.price"
+        [date]="event.date"
+        [category]="event.category"
+      >
+      </app-card>
+    }
+  </div>
+
+  @if (isLoading) {
+    <div class="loading-spinner">Loading events...</div>
+  } @else {
+    <div class="cards-container">
+      @for (event of paginatedEvents; track event.id) {
+        <app-card
+          [imageUrl]="event.images[0]"
+          [imageAlt]="event.name"
+          [title]="event.name"
+          [description]="event.description"
+          [price]="event.price"
+          [date]="event.date"
+          [category]="event.category"
+          (navtoDetails)="navToDetail(event.id)"
+          (bookEvent)="bookEvent(event.id)"
+        >
+        </app-card>
+      }
+    </div>
+  }
+
+  @if (totalPages > 1) {
+    <div class="pagination-container">
+      <button
+        (click)="changePage(currentPage - 1)"
+        [disabled]="currentPage === 1"
+        class="pagination-button prev-next"
+      >
+        &larr; Previous
+      </button>
+
+      <div class="page-numbers">
+        @for (page of getPageNumbers(); track page) {
+          <button
+            (click)="changePage(page)"
+            [class.active]="currentPage === page"
+            class="pagination-button"
+          >
+            {{ page }}
+          </button>
+        }
+      </div>
+
+      <button
+        (click)="changePage(currentPage + 1)"
+        [disabled]="currentPage === totalPages"
+        class="pagination-button prev-next"
+      >
+        Next &rarr;
+      </button>
+    </div>
+  }
+  <div class="no-events" *ngIf="filteredEvents.length === 0">No events found.</div>
+</div>

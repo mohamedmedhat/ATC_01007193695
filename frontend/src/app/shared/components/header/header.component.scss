@@ -1,0 +1,375 @@
+@use '../../../../styles/animations' as *;
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+// Base Nav Styling
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+  margin-bottom: 30px;
+  height: $header-height;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  transition: all 0.4s ease;
+  box-sizing: border-box;
+  overflow-x: visible;
+  min-width: 100vw;
+
+  // Glass effect for modern look
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba($dark-bg, 0.85);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+
+  // Animated border bottom
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, $primary-color, transparent);
+    animation: borderPulse 8s infinite;
+  }
+
+  // Scroll effect - smaller and more opaque when scrolling
+  &.scrolled {
+    height: 60px;
+    background: rgba($dark-bg, 0.95);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    padding: 0 25px;
+  }
+}
+
+// Logo
+.logo {
+  h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: $light-color;
+    letter-spacing: 0.5px;
+    position: relative;
+    display: inline-block;
+    margin: 0;
+
+    // Animated text gradient effect
+    background: linear-gradient(45deg, $primary-color, $light-color 50%, $primary-color);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: textShine 3s linear infinite;
+
+    // Logo hover effect
+    &:hover {
+      transform: translateY(-2px);
+      text-shadow: $glow-effect;
+    }
+
+    // Underline animation
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: $primary-color;
+      transition: width 0.3s ease;
+    }
+
+    &:hover::after {
+      width: 100%;
+    }
+  }
+}
+
+// Navigation Links
+ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 30px;
+
+  li {
+    position: relative;
+
+    a {
+      color: rgba($light-color, 0.8);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 16px;
+      letter-spacing: 0.3px;
+      padding: 8px 0;
+      text-transform: capitalize;
+      transition: all $hover-transition;
+      position: relative;
+
+      // Hover effect
+      &:hover {
+        color: $light-color;
+        text-shadow: $glow-effect;
+      }
+
+      // Active link indicator
+      &.active-link {
+        color: $primary-color;
+        font-weight: 600;
+      }
+
+      // Animated underline
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: $primary-color;
+        transition: width 0.3s ease;
+      }
+
+      &:hover::after,
+      &.active-link::after {
+        width: 100%;
+      }
+    }
+  }
+}
+
+// Theme Toggle and User Info
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+  // User info with welcome message
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    span {
+      color: rgba($light-color, 0.9);
+      font-size: 14px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 150px;
+
+      // Animation for welcome message
+      animation: fadeSlideIn 0.5s ease forwards;
+    }
+
+    // Login/Logout Button
+    button {
+      background: transparent;
+      border: 1px solid $primary-color;
+      border-radius: 20px;
+      color: $primary-color;
+      padding: 6px 15px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all $hover-transition;
+      outline: none;
+
+      &:hover {
+        background: rgba($primary-color, 0.1);
+        box-shadow: 0 0 8px rgba($primary-color, 0.5);
+        transform: translateY(-2px);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+  }
+
+  // Theme selector styling
+  label {
+    color: rgba($light-color, 0.7);
+    font-size: 14px;
+  }
+
+  select {
+    background: rgba($dark-color, 0.6);
+    border: 1px solid rgba($primary-color, 0.3);
+    border-radius: 6px;
+    color: $light-color;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+    transition: all $hover-transition;
+
+    &:focus,
+    &:hover {
+      border-color: $primary-color;
+      box-shadow: 0 0 8px rgba($primary-color, 0.4);
+    }
+
+    option {
+      background-color: $dark-color;
+      color: $light-color;
+    }
+  }
+}
+
+// Mobile Menu Toggle (for responsive design)
+.mobile-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  color: $light-color;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 101;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+// Responsive Styles
+@media (max-width: $mobile-breakpoint) {
+  nav {
+    padding: 0 20px;
+  }
+
+  .mobile-toggle {
+    display: block;
+  }
+
+  ul {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 70%;
+    height: 100vh;
+    background: $dark-bg;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    transition: right 0.4s ease;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+    padding: 50px 30px;
+
+    &.active {
+      right: 0;
+    }
+
+    li {
+      width: 100%;
+      text-align: center;
+
+      a {
+        font-size: 18px;
+        display: block;
+        padding: 15px;
+        width: 100%;
+      }
+    }
+  }
+
+  .theme-toggle {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-end;
+
+    .user-info {
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+  }
+}
+
+// Light Theme Variant
+body.light-theme {
+  nav {
+    background: rgba($light-bg, 0.9);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+    &.scrolled {
+      background: rgba($light-bg, 0.95);
+    }
+
+    &::after {
+      background: linear-gradient(90deg, transparent, $secondary-color, transparent);
+    }
+  }
+
+  .logo h1 {
+    background: linear-gradient(45deg, $accent-color, $secondary-color 50%, $accent-color);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  ul li a {
+    color: rgba($dark-color, 0.8);
+
+    &:hover,
+    &.active-link {
+      color: $secondary-color;
+    }
+
+    &::after {
+      background-color: $secondary-color;
+    }
+  }
+
+  .theme-toggle {
+    .user-info {
+      span {
+        color: $dark-color;
+      }
+
+      button {
+        border-color: $secondary-color;
+        color: $secondary-color;
+
+        &:hover {
+          background: rgba($secondary-color, 0.1);
+        }
+      }
+    }
+
+    label {
+      color: rgba($dark-color, 0.8);
+    }
+
+    select {
+      background: rgba($light-bg, 0.8);
+      border-color: rgba($secondary-color, 0.3);
+      color: $dark-color;
+
+      &:focus,
+      &:hover {
+        border-color: $secondary-color;
+      }
+
+      option {
+        background-color: $light-bg;
+        color: $dark-color;
+      }
+    }
+  }
+
+  @media (max-width: $mobile-breakpoint) {
+    ul {
+      background: $light-bg;
+      box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    }
+  }
+}

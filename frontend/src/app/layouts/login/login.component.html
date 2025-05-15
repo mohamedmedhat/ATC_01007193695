@@ -24,9 +24,16 @@
         </mat-error>
       </mat-form-field>
 
+      <div class="reg-link">
+        <p>Don't have account ? <a routerLink="/auth/register">register now</a></p>
+      </div>
+
       <button mat-raised-button color="primary" class="login-btn" [disabled]="form.invalid">
-        login
+        {{ (isLoading$ | async) ? 'Logging in...' : 'Login' }}
       </button>
     </form>
+    <div *ngIf="error$ | async as error" class="error-message">
+      {{ error }}
+    </div>
   </div>
 </div>

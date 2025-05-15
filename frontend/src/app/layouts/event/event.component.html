@@ -1,1 +1,77 @@
-<p>event works!</p>
+<!-- event-detail.component.html -->
+<div class="event-detail-container">
+  <div class="event-hero">
+    <div class="event-hero-content">
+      <h1>{{ event.title }}</h1>
+      <div class="event-meta">
+        <span class="event-category">{{ event.category }}</span>
+        <span class="event-date">{{ formatDate(event.date) }}</span>
+        <span class="event-location">📍 {{ event.location }}</span>
+      </div>
+    </div>
+    <div class="event-image">
+      <img [src]="event.imageUrl" [alt]="event.title" />
+    </div>
+  </div>
+
+  <div class="event-content">
+    <div class="event-main">
+      <div class="event-description">
+        <h2>About This Event</h2>
+        <p>{{ event.description }}</p>
+      </div>
+
+      <div class="event-details">
+        <h2>Details</h2>
+        <div class="details-grid">
+          <div class="detail-item">
+            <span class="detail-label">Organizer</span>
+            <span class="detail-value">{{ event.organizer }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Date & Time</span>
+            <span class="detail-value">{{ formatDate(event.date) }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Location</span>
+            <span class="detail-value">{{ event.location }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Capacity</span>
+            <span class="detail-value">{{ event.capacity }} people</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Tickets Available</span>
+            <span class="detail-value">{{ event.remainingTickets }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="event-sidebar">
+      <div class="booking-card">
+        <div class="price">
+          <span class="amount">${{ event.price }}</span>
+          <span class="per-ticket">per ticket</span>
+        </div>
+
+        <div class="availability" [class.low]="event.remainingTickets < 50">
+          {{ event.remainingTickets }} tickets remaining
+        </div>
+
+        <button class="book-btn" (click)="bookEvent()" [disabled]="event.isBooked">
+          {{ event.isBooked ? 'Already Booked' : 'Book Now' }}
+        </button>
+
+        <div class="share-options">
+          <span>Share this event:</span>
+          <div class="social-icons">
+            <button class="social-icon">📱</button>
+            <button class="social-icon">✉️</button>
+            <button class="social-icon">🔗</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

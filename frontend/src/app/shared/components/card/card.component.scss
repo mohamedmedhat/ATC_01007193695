@@ -1,0 +1,225 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/_variables' as *;
+@use '../../../../styles/_mixins' as *;
+
+.card {
+  width: 100%;
+  max-width: 320px;
+  border-radius: 20px;
+  background: $glass-background;
+  backdrop-filter: blur($blur-effect);
+  -webkit-backup-filter: blur($blur-effect);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: all 0.5s ease;
+  animation: cardEntrance 1s ease-out forwards;
+
+  // Floating gradient circle decorations
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    z-index: -1;
+    filter: blur(35px);
+    animation: floatingCircles 12s ease-in-out infinite alternate;
+  }
+
+  &::before {
+    width: 120px;
+    height: 120px;
+    background: rgba($secondary-color, 0.3);
+    top: -60px;
+    right: -60px;
+  }
+
+  &::after {
+    width: 150px;
+    height: 150px;
+    background: rgba($accent-color, 0.3);
+    bottom: -75px;
+    left: -75px;
+    animation-delay: -4s;
+  }
+
+  &:hover {
+    transform: translateY(-10px) translateZ(20px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  }
+
+  .dtp {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .img {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+    }
+  }
+
+  &:hover .img img {
+    transform: scale(1.05);
+  }
+
+  .content {
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+
+    h2 {
+      color: $light-color;
+      font-size: 22px;
+      margin-bottom: 10px;
+      font-weight: 600;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      position: relative;
+      padding-bottom: 10px;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 50px;
+        height: 3px;
+        background: $primary-color;
+        border-radius: 3px;
+        box-shadow: 0 0 8px rgba($primary-color, 0.5);
+      }
+    }
+
+    .desc {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 15px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .price {
+      color: $primary-color;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-shadow: 0 0 8px rgba($primary-color, 0.3);
+      animation: neonPulse 2s ease-in-out infinite alternate;
+    }
+
+    .date {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 12px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+
+      &::before {
+        content: '📅';
+        font-size: 14px;
+      }
+    }
+
+    button {
+      background: linear-gradient(135deg, $primary-color, darken($primary-color, 15%));
+      color: $light-color;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba($primary-color, 0.3);
+
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba($primary-color, 0.4);
+      }
+
+      &:active {
+        transform: translateY(1px);
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 5px;
+        height: 5px;
+        background: rgba(255, 255, 255, 0.7);
+        opacity: 0;
+        border-radius: 100%;
+        transform: scale(1, 1) translate(-50%, -50%);
+        transform-origin: 50% 50%;
+      }
+
+      &:focus:not(:active)::after {
+        animation: buttonRipple 1s ease-out;
+      }
+
+      &:disabled {
+        background: linear-gradient(
+          135deg,
+          desaturate($primary-color, 50%),
+          darken(desaturate($primary-color, 50%), 15%)
+        );
+        cursor: not-allowed;
+        opacity: 0.7;
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .card {
+    max-width: 100%;
+
+    .img {
+      height: 180px;
+    }
+
+    .content {
+      padding: 15px;
+
+      h2 {
+        font-size: 20px;
+      }
+    }
+  }
+}
+
+.booked {
+  animation: bookedPulse 0.5s ease;
+  background: linear-gradient(135deg, $secondary-color, darken($secondary-color, 15%)) !important;
+}

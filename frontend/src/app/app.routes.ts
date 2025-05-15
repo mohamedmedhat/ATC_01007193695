@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -19,6 +20,7 @@ export const routes: Routes = [
   {
     path: ':name/events',
     title: 'EventBooking - myEvents',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./layouts/my-events/my-events.component').then((m) => m.MyEventsComponent),
   },

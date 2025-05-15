@@ -1,0 +1,21 @@
+<nav>
+  <div class="logo">
+    <h1>Eventify</h1>
+  </div>
+  <ul>
+    <li><a routerLink="/">Home</a></li>
+    <li><a routerLink="/events">events</a></li>
+    <li><a routerLink="/:name/event">myEvents</a></li>
+  </ul>
+  <div class="theme-toggle">
+    <div class="user-info">
+      <span *ngIf="isLoggedIn">Welcome, {{ userName }}</span>
+      <button (click)="toggleLogin()">{{ isLoggedIn ? 'Logout' : 'Login' }}</button>
+    </div>
+    <label for="theme">Theme:</label>
+    <select id="theme" (change)="onThemeChange($event)">
+      <option value="light">Light</option>
+      <option value="dark">Dark</option>
+    </select>
+  </div>
+</nav>

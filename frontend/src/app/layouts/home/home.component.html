@@ -1,1 +1,35 @@
-<p>home works!</p>
+<!-- home.component.html -->
+<div class="home-container">
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Welcome to Eventify</h1>
+      <p class="subtitle">Your gateway to unforgettable experiences</p>
+      <button class="cta-button" routerLink="/events">Browse Events</button>
+    </div>
+  </section>
+
+  <section class="features">
+    <h2>Why Choose Us</h2>
+    <div class="feature-cards">
+      <div class="feature-card" *ngFor="let feature of features">
+        <div class="feature-icon">{{ feature.icon }}</div>
+        <h3>{{ feature.title }}</h3>
+        <p>{{ feature.description }}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="testimonials">
+    <h2>What Our Users Say</h2>
+    <div class="testimonial-cards">
+      <div class="testimonial-card">
+        <p>"Found amazing concerts through this app!"</p>
+        <div class="user">- Alex M.</div>
+      </div>
+      <div class="testimonial-card">
+        <p>"Booking is so quick and easy."</p>
+        <div class="user">- Sarah K.</div>
+      </div>
+    </div>
+  </section>
+</div>

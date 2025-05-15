@@ -1,4 +1,13 @@
-/* You can add global styles to this file, and also import other style files */
+@use './styles/variables' as *;
+@use './styles/_mixins' as *;
+@use './styles/_animations' as *;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+}
 
 html,
 body {
@@ -6,6 +15,33 @@ body {
 }
 
 body {
-  margin: 0;
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  perspective: 1000px;
+  background: $animated-gradient;
+  animation: gradientBG 15s ease infinite;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+      radial-gradient(circle, rgba(0, 184, 148, 0.05) 1px, transparent 1px),
+      radial-gradient(circle, rgba(0, 184, 148, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position:
+      0 0,
+      10px 10px;
+    animation: particleMove 120s linear infinite;
+  }
+}
+
+input,
+.mat-input-element,
+input.mat-input-element {
+  color: white !important;
 }

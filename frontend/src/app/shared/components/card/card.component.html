@@ -1,0 +1,23 @@
+<div
+  class="card"
+  tabindex="0"
+  (click)="nav()"
+  (keyup.enter)="nav()"
+  role="button"
+  aria-pressed="false"
+>
+  <div class="img">
+    <img src="{{ imageUrl }}" alt="{{ imageAlt }}" loading="lazy" />
+  </div>
+  <div class="content">
+    <h2>{{ title }}</h2>
+    <p class="desc">{{ description }}</p>
+    <div class="dtp">
+      <p class="date">{{ date }}</p>
+      <p class="price">{{ price }}$</p>
+    </div>
+    <button (click)="book()" [disabled]="isBooked" [class.booked]="isBooked">
+      {{ !isBooked ? 'Book Now' : 'Booked' }}
+    </button>
+  </div>
+</div>

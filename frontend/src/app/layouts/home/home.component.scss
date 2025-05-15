@@ -1,3 +1,195 @@
-p {
-  color: red;
+@use '../../../styles/_variables' as *;
+@use '../../../styles/_mixins' as *;
+@use '../../../styles/_animations' as *;
+
+.home-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  color: $light-color;
+}
+
+.hero {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 40px;
+  background: $glass-background;
+  backdrop-filter: blur($blur-effect);
+  -webkit-backdrop-filter: blur($blur-effect);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 60px 40px;
+  text-align: center;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    z-index: -1;
+    filter: blur(35px);
+    animation: floatingCircles 12s ease-in-out infinite alternate;
+  }
+
+  &::before {
+    width: 150px;
+    height: 150px;
+    background: rgba($secondary-color, 0.3);
+    top: -75px;
+    right: -75px;
+  }
+
+  &::after {
+    width: 200px;
+    height: 200px;
+    background: rgba($accent-color, 0.3);
+    bottom: -100px;
+    left: -100px;
+    animation-delay: -6s;
+  }
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  text-shadow: $neon-glow;
+  animation: neonPulse 1.5s ease-in-out infinite alternate;
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 30px;
+  opacity: 0.9;
+}
+
+.cta-button {
+  background: linear-gradient(135deg, $primary-color, darken($primary-color, 15%));
+  color: $light-color;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 6px 15px rgba($primary-color, 0.3);
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba($primary-color, 0.4);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+section {
+  margin-bottom: 60px;
+}
+
+h2 {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 40px;
+  position: relative;
+  padding-bottom: 15px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: $primary-color;
+    border-radius: 3px;
+    box-shadow: 0 0 10px rgba($primary-color, 0.5);
+  }
+}
+
+.feature-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.feature-card {
+  background: $glass-background;
+  backdrop-filter: blur($blur-effect);
+  -webkit-backdrop-filter: blur($blur-effect);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 15px;
+  padding: 30px;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.feature-icon {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.testimonial-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 30px;
+}
+
+.testimonial-card {
+  background: $glass-background;
+  backdrop-filter: blur($blur-effect);
+  -webkit-backdrop-filter: blur($blur-effect);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 15px;
+  padding: 30px;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+
+  p {
+    font-style: italic;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+  }
+
+  .user {
+    font-weight: 600;
+    color: $primary-color;
+    text-shadow: 0 0 8px rgba($primary-color, 0.3);
+  }
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2.2rem;
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+  }
+
+  .hero {
+    padding: 40px 20px;
+  }
+
+  .feature-cards,
+  .testimonial-cards {
+    grid-template-columns: 1fr;
+  }
 }

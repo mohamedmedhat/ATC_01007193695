@@ -6,6 +6,15 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { Router, RouterLink } from '@angular/router';
+import { Store } from '@ngrx/store';
+import {
+  selectError,
+  selectIsAuthenticated,
+  selectIsLoading,
+} from '../../store/auth/auth.selector';
+import { AuthActions } from '../../store/auth/auth.actions';
+import { filter, take } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -16,6 +25,7 @@ import { MatInputModule } from '@angular/material/input';
     MatCheckboxModule,
     ReactiveFormsModule,
     CommonModule,
+    RouterLink,
   ],
   providers: [AuthService],
   templateUrl: './login.component.html',
@@ -25,6 +35,11 @@ import { MatInputModule } from '@angular/material/input';
 export class LoginComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
+  private router = inject(Router);
+  private store = inject(Store);
+
+  error$ = this.store.select(selectError);
+  isLoading$ = this.store.select(selectIsLoading);
 
   form: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -35,9 +50,16 @@ export class LoginComponent {
     if (this.form.invalid) return;
 
     const { email, password } = this.form.value;
-    this.authService.login(email, password).subscribe({
-      next: (res) => console.log('Registered!', res),
-      error: (err) => console.error('Register failed:', err),
-    });
+    this.store.dispatch(AuthActions.login({ email, password }));
+
+    this.store
+      .select(selectIsAuthenticated)
+      .pipe(
+        filter((isAuth) => isAuth),
+        take(1),
+      )
+      .subscribe(() => {
+        this.router.navigate(['/']);
+      });
   }
 }

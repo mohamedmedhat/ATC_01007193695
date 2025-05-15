@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,7 +53,7 @@ public class EventController {
     }
 
     @GetMapping
-    public ResponseEntity<List<EventResponseDto>> getEvents(@RequestParam String category, @RequestParam int page,
+    public ResponseEntity<List<EventResponseDto>> getEvents(@RequestParam(required = false) String category, @RequestParam int page,
             @RequestParam int size) {
         List<EventResponseDto> response = eventService.getEvents(category, page, size);
         return ResponseEntity.ok(response);
