@@ -137,3 +137,8 @@ All commit messages must follow this format:
 - `chore(lint): add ESLint and Prettier setup`
 
 Allowed types: `feat`, `fix`, `chore`, `refactor`, `style`, `test`, `docs`, `ci`, `perf`
+
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
