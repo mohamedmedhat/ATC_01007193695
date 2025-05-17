@@ -1,53 +1,59 @@
-<!-- event-detail.component.html -->
 <div class="event-detail-container">
-  <div class="event-hero">
-    <div class="event-hero-content">
-      <h1>{{ event.title }}</h1>
-      <div class="event-meta">
-        <span class="event-category">{{ event.category }}</span>
-        <span class="event-date">{{ formatDate(event.date) }}</span>
-        <span class="event-location">📍 {{ event.location }}</span>
-      </div>
-    </div>
-    <div class="event-image">
-      <img [src]="event.imageUrl" [alt]="event.title" />
-    </div>
+  <!-- Loading State -->
+  <div *ngIf="isLoading$ | async" class="loading-spinner">
+    <p>Loading event details...</p>
   </div>
 
-  <div class="event-content">
+  <!-- Error State -->
+  <div *ngIf="error$ | async as error" class="error-message">
+    {{ error }}
+  </div>
+
+  <!-- Event Content -->
+  <div *ngIf="event$ | async as event" class="event-content">
+    <!-- Main Content -->
     <div class="event-main">
+      <!-- Hero Section -->
+      <div class="event-hero">
+        <div class="event-hero-content">
+          <h1>{{ event.name }}</h1>
+          <div class="event-meta">
+            <span class="event-category">
+              <i class="fas fa-tag"></i> {{ event.category }}
+            </span>
+            <span>
+              <i class="fas fa-calendar-alt"></i> {{ formatDate(event.date) }}
+            </span>
+            <span>
+              <i class="fas fa-map-marker-alt"></i> {{ event.venue }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Event Images (using first image) -->
+        <div class="event-image" *ngIf="event.images.length > 0">
+          <img [src]="event.images[0].url" [alt]="event.name" />
+        </div>
+      </div>
+
+      <!-- Description -->
       <div class="event-description">
         <h2>About This Event</h2>
         <p>{{ event.description }}</p>
       </div>
 
-      <div class="event-details">
-        <h2>Details</h2>
-        <div class="details-grid">
-          <div class="detail-item">
-            <span class="detail-label">Organizer</span>
-            <span class="detail-value">{{ event.organizer }}</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label">Date & Time</span>
-            <span class="detail-value">{{ formatDate(event.date) }}</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label">Location</span>
-            <span class="detail-value">{{ event.location }}</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label">Capacity</span>
-            <span class="detail-value">{{ event.capacity }} people</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label">Tickets Available</span>
-            <span class="detail-value">{{ event.remainingTickets }}</span>
+      <!-- Gallery (if multiple images) -->
+      <div class="event-gallery" *ngIf="event.images.length > 1">
+        <h2>Gallery</h2>
+        <div class="gallery-grid">
+          <div class="gallery-item" *ngFor="let image of event.images.slice(1)">
+            <img [src]="image.url" [alt]="event.name + ' image ' + image.id" />
           </div>
         </div>
       </div>
     </div>
 
+    <!-- Sidebar -->
     <div class="event-sidebar">
       <div class="booking-card">
         <div class="price">
@@ -55,20 +61,26 @@
           <span class="per-ticket">per ticket</span>
         </div>
 
-        <div class="availability" [class.low]="event.remainingTickets < 50">
-          {{ event.remainingTickets }} tickets remaining
+        <div class="availability" [class.low]="isAvailabilityLow()">
+          {{ getAvailabilityStatus() }}
         </div>
 
-        <button class="book-btn" (click)="bookEvent()" [disabled]="event.isBooked">
-          {{ event.isBooked ? 'Already Booked' : 'Book Now' }}
+        <button class="book-btn" (click)="bookEvent()" [disabled]="isBooked()">
+          {{ isBooked() ? 'Already Booked' : 'Book Now' }}
         </button>
 
         <div class="share-options">
-          <span>Share this event:</span>
+          <p>Share this event</p>
           <div class="social-icons">
-            <button class="social-icon">📱</button>
-            <button class="social-icon">✉️</button>
-            <button class="social-icon">🔗</button>
+            <button class="social-icon" (click)="shareEvent('facebook')">
+              <fa-icon [icon]="facebookIcon"></fa-icon>
+            </button>
+            <button class="social-icon" (click)="shareEvent('twitter')">
+              <fa-icon [icon]="twitterIcon"></fa-icon>
+            </button>
+            <button class="social-icon" (click)="shareEvent('linkedin')">
+              <fa-icon [icon]="linkedInIcon"></fa-icon>
+            </button>
           </div>
         </div>
       </div>

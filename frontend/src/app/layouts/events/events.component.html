@@ -2,7 +2,8 @@
   <div class="controls">
     <div class="filter-controls">
       <select [(ngModel)]="selectedCategory" (change)="onFilterChange()" class="category-select">
-        <option *ngFor="let category of categories" [value]="category">
+        <option value="">All Categories</option>
+        <option *ngFor="let category of categories$ | async" [value]="category">
           {{ category }}
         </option>
       </select>
@@ -15,80 +16,75 @@
         class="search-input"
       />
     </div>
-
-    <div class="pagination-info">
-      Showing {{ getDisplayRange() }} of {{ filteredEvents.length }} events
+    
+    <div class="pagination-info" *ngIf="(hasLoaded$ | async)">
+      Showing {{ showingStart }}-{{ showingEnd }} of {{ totalEvents }} events
     </div>
   </div>
 
-  <div class="cards-container">
-    @for (event of paginatedEvents; track $index) {
-      <app-card
-        [imageUrl]="event.images[0]"
-        [imageAlt]="'the image for event: ' + (event.name || '')"
-        [title]="event.name"
-        (navtoDetails)="navToDetail(event.id)"
-        (bookEvent)="bookEvent(event.id)"
-        [description]="event.description"
-        [price]="event.price"
-        [date]="event.date"
-        [category]="event.category"
-      >
-      </app-card>
-    }
-  </div>
-
-  @if (isLoading) {
+  @if (isLoading$ | async) {
     <div class="loading-spinner">Loading events...</div>
-  } @else {
+  } @else if (hasLoaded$ | async) {
     <div class="cards-container">
-      @for (event of paginatedEvents; track event.id) {
+      @for (event of events$ | async; track event.id) {
         <app-card
-          [imageUrl]="event.images[0]"
+          [imageUrl]="event.images[0].url || ''"
           [imageAlt]="event.name"
           [title]="event.name"
           [description]="event.description"
           [price]="event.price"
           [date]="event.date"
           [category]="event.category"
-          (navtoDetails)="navToDetail(event.id)"
-          (bookEvent)="bookEvent(event.id)"
-        >
-        </app-card>
+          [isBooked]="isBooking()"
+          [eventId]="event.id.toString()"
+          (navToDetail)="navToDetail($event)"
+          (bookEvent)="bookEvent($event)"
+        ></app-card>
       }
     </div>
   }
 
-  @if (totalPages > 1) {
-    <div class="pagination-container">
-      <button
-        (click)="changePage(currentPage - 1)"
-        [disabled]="currentPage === 1"
-        class="pagination-button prev-next"
-      >
-        &larr; Previous
-      </button>
+  @if (error$ | async; as error) {
+    <div class="error-message">{{ error }}</div>
+  }
 
+  @if ((isLoading$ | async) === false && (hasLoaded$ | async) && !(events$ | async)?.length) {
+    <div class="no-events-message">
+      No events found matching your criteria.
+    </div>
+  }
+
+  @if ((hasLoaded$ | async) && (events$ | async)?.length) {
+    <div class="pagination-container">
+      <button class="pagination-button prev-next" 
+              (click)="previousPage()" 
+              [disabled]="currentPage === 1">
+        Previous
+      </button>
+      
       <div class="page-numbers">
         @for (page of getPageNumbers(); track page) {
-          <button
-            (click)="changePage(page)"
-            [class.active]="currentPage === page"
-            class="pagination-button"
-          >
+          <button class="pagination-button" 
+                  [class.active]="page === currentPage"
+                  (click)="goToPage(page)">
             {{ page }}
           </button>
         }
       </div>
-
-      <button
-        (click)="changePage(currentPage + 1)"
-        [disabled]="currentPage === totalPages"
-        class="pagination-button prev-next"
-      >
-        Next &rarr;
+      
+      <button class="pagination-button prev-next" 
+              (click)="nextPage()" 
+              [disabled]="currentPage >= totalPages">
+        Next
       </button>
     </div>
   }
-  <div class="no-events" *ngIf="filteredEvents.length === 0">No events found.</div>
 </div>
+
+@if (isLoading$ | async) {
+  <div class="cards-container">
+    @for (i of [1,2,3,4]; track i) {
+      <div class="card-skeleton"></div>
+    }
+  </div>
+}

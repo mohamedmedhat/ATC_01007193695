@@ -1,17 +1,51 @@
 import { inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
-import { AuthActions } from './auth.actions';
+import { AuthActions } from './auth.action';
+
+export const checkAuth$ = createEffect(
+  (actions$ = inject(Actions), authService = inject(AuthService)) => {
+    return actions$.pipe(
+      ofType(AuthActions.checkAuth),
+      switchMap(() =>
+        authService.refreshToken().pipe(
+          map(({ access_token }) => AuthActions.checkAuthSuccess({ token: access_token })),
+          catchError(() => {
+            return of(AuthActions.checkAuthFailure());
+          }),
+        ),
+      ),
+    );
+  },
+  { functional: true },
+);
 
 export const login$ = createEffect(
   (actions$ = inject(Actions), authService = inject(AuthService)) => {
     return actions$.pipe(
       ofType(AuthActions.login),
-      switchMap(({ email, password }) =>
-        authService.login(email, password).pipe(
+      tap(() => console.log('Login action dispatched')),
+      switchMap(({ req }) =>
+        authService.login(req).pipe(
+          tap((response) => console.log('Login response:', response)), // Add this
           map((response) => AuthActions.loginSuccess({ response })),
           catchError((error) => of(AuthActions.loginFailure({ error: error.message }))),
+        ),
+      ),
+    );
+  },
+  { functional: true },
+);
+
+export const logout$ = createEffect(
+  (actions$ = inject(Actions), authService = inject(AuthService)) => {
+    return actions$.pipe(
+      ofType(AuthActions.logout),
+      switchMap(() =>
+        authService.logout().pipe(
+          map(() => AuthActions.logoutSuccess()),
+          catchError(() => of(AuthActions.logoutSuccess())), // Always proceed with logout
         ),
       ),
     );
@@ -23,10 +57,13 @@ export const register$ = createEffect(
   (actions$ = inject(Actions), authService = inject(AuthService)) => {
     return actions$.pipe(
       ofType(AuthActions.register),
-      switchMap(({ name, email, password }) =>
-        authService.register(name, email, password).pipe(
+      switchMap(({ req }) =>
+        authService.register(req).pipe(
           map((response) => AuthActions.registerSuccess({ response })),
-          catchError((error) => of(AuthActions.registerFailure({ error: error.message }))),
+          catchError((error) => {
+            const errorMsg = error.error?.message || error.message || 'Registration failed';
+            return of(AuthActions.registerFailure({ error: errorMsg }));
+          }),
         ),
       ),
     );
@@ -34,23 +71,34 @@ export const register$ = createEffect(
   { functional: true },
 );
 
-
 export const refreshToken$ = createEffect(
   (actions$ = inject(Actions), authService = inject(AuthService)) => {
     return actions$.pipe(
       ofType(AuthActions.refreshToken),
-      switchMap(() => {
-        const refreshToken = localStorage.getItem('refresh_token');
-        if (!refreshToken) return of(AuthActions.refreshTokenFailure({ error: 'No refresh token' }));
-        
-        return authService.refreshToken(refreshToken).pipe(
+      switchMap(() =>
+        authService.refreshToken().pipe(
           map(({ access_token }) => AuthActions.refreshTokenSuccess({ token: access_token })),
-          catchError(error => of(AuthActions.refreshTokenFailure({ error: error.message })))
-        );
-      })
+          catchError((error) => of(AuthActions.refreshTokenFailure({ error: error.message }))),
+        ),
+      ),
     );
   },
-  { functional: true }
+  { functional: true },
 );
 
-export const authEffects = { login$, register$, refreshToken$ };
+export const autoLogin$ = createEffect(
+  (actions$ = inject(Actions)) => {
+    return actions$.pipe(
+      ofType(AuthActions.autoLogin),
+      switchMap(() => {
+        const token = localStorage.getItem('access_token');
+        if (!token) return of(AuthActions.autoLoginFailure());
+
+        return of(AuthActions.autoLoginSuccess({ token }));
+      }),
+    );
+  },
+  { functional: true },
+);
+
+export const authEffects = { login$, register$, autoLogin$, checkAuth$, logout$ };

@@ -13,8 +13,9 @@ import {
   selectIsAuthenticated,
   selectIsLoading,
 } from '../../store/auth/auth.selector';
-import { AuthActions } from '../../store/auth/auth.actions';
+import { LoginRequest } from '../../store/auth/auth.model';
 import { filter, take } from 'rxjs';
+import { AuthActions } from '../../store/auth/auth.action';
 
 @Component({
   selector: 'app-login',
@@ -34,7 +35,6 @@ import { filter, take } from 'rxjs';
 })
 export class LoginComponent {
   private fb = inject(FormBuilder);
-  private authService = inject(AuthService);
   private router = inject(Router);
   private store = inject(Store);
 
@@ -50,7 +50,9 @@ export class LoginComponent {
     if (this.form.invalid) return;
 
     const { email, password } = this.form.value;
-    this.store.dispatch(AuthActions.login({ email, password }));
+    const req: LoginRequest = { email, password };
+
+    this.store.dispatch(AuthActions.login({ req }));
 
     this.store
       .select(selectIsAuthenticated)

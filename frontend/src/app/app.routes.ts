@@ -10,15 +10,17 @@ export const routes: Routes = [
   {
     path: 'events',
     title: 'EventBooking - events',
+    canActivate: [authGuard],
     loadComponent: () => import('./layouts/events/events.component').then((e) => e.EventsComponent),
   },
   {
     path: 'events/:id',
     title: 'EventBooking - event',
+    canActivate: [authGuard],
     loadComponent: () => import('./layouts/event/event.component').then((e) => e.EventComponent),
   },
   {
-    path: ':name/events',
+    path: 'myevents',
     title: 'EventBooking - myEvents',
     canActivate: [authGuard],
     loadComponent: () =>
@@ -43,6 +45,7 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
+    canActivate: [authGuard],
     loadChildren: () => [
       {
         path: 'dashboard',

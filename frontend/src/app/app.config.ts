@@ -11,6 +11,8 @@ import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { authReducer } from './store/auth/auth.reducer';
 import { authEffects } from './store/auth/auth.effect';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { eventsReducer } from './store/events/events.reducer';
+import { eventsEffects } from './store/events/events.effect';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,8 +21,8 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([authInterceptor])),
     provideAnimationsAsync(),
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { appearance: 'outline' } },
-    provideStore({ auth: authReducer }),
-    provideEffects([authEffects]),
+    provideStore({ auth: authReducer, events: eventsReducer }),
+    provideEffects([authEffects, eventsEffects]),
     provideStoreDevtools(),
   ],
 };

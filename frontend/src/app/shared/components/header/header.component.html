@@ -1,19 +1,30 @@
-<nav>
+<nav [class.scrolled]="isScrolled()">
   <div class="logo">
     <h1>Eventify</h1>
   </div>
+
   <ul>
-    <li><a routerLink="/">Home</a></li>
-    <li><a routerLink="/events">events</a></li>
-    <li><a routerLink="/:name/event">myEvents</a></li>
+    @for (item of links; track item.id) {
+    <li>
+      <a [routerLink]="item.route" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
+        {{ item.name }}
+      </a>
+    </li>
+    }
   </ul>
+
   <div class="theme-toggle">
     <div class="user-info">
-      <span *ngIf="isLoggedIn">Welcome, {{ userName }}</span>
-      <button (click)="toggleLogin()">{{ isLoggedIn ? 'Logout' : 'Login' }}</button>
+      @if (userName$ | async; as userName) {
+      <span>Welcome, {{ userName }}</span>
+      }
+      <button (click)="toggleAuth()">
+        {{ (isLoggedIn() | async) ? 'Logout' : 'Login' }}
+      </button>
     </div>
+
     <label for="theme">Theme:</label>
-    <select id="theme" (change)="onThemeChange($event)">
+    <select id="theme" (change)="onThemeChange($event)" [value]="currentTheme()">
       <option value="light">Light</option>
       <option value="dark">Dark</option>
     </select>

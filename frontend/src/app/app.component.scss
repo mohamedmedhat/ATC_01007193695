@@ -1,3 +1,9 @@
+@use '../styles/variables' as *;
+
 p {
   color: red;
+}
+
+.header {
+  margin-bottom: 100px;
 }

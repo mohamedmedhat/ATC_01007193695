@@ -1,12 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CardComponent } from '../../shared/components/card/card.component';
-// import { EventsData } from '../../../data/events.data';
-import { eventResponse } from '../../shared/models/events,model';
-import { finalize } from 'rxjs';
+import { map, Observable, of, take, startWith } from 'rxjs';
 import { EventsService } from '../../services/events.service';
 import { Router } from '@angular/router';
+import { BookEventRequest, EventResponse, GetEventsRequest } from '../../store/events/events.model';
+import { Store } from '@ngrx/store';
+import { selectIsLoading, selectError } from '../../store/auth/auth.selector';
+import { EventsActions } from '../../store/events/events.action';
+import { selectEvents, selectUserId } from '../../store/events/events.selector';
 
 @Component({
   selector: 'app-events',
@@ -17,118 +20,142 @@ import { Router } from '@angular/router';
   styleUrl: './events.component.scss',
 })
 export class EventsComponent implements OnInit {
-  events: eventResponse[] = [];
-  isLoading = false;
+  events$: Observable<EventResponse[]> = of([]);
+  isLoading$: Observable<boolean> = of(false);
+  error$: Observable<string | null> = of(null);
+  userId$: Observable<string | undefined> = of(undefined);
+  hasLoaded$: Observable<boolean> = of(false);
+
+  // Local component state
+  isBooking = signal(false);
   currentPage = 1;
-  itemsPerPage = 6;
+  pageSize = 6;
+  totalEvents = 0;
+  totalPages = 1;
   selectedCategory = 'All';
   searchQuery = '';
-  totalItems = 0;
 
   constructor(
-    private eventsService: EventsService,
+    private store: Store,
     private router: Router,
   ) {}
 
   ngOnInit(): void {
+    this.events$ = this.store.select(selectEvents);
+    this.isLoading$ = this.store.select(selectIsLoading);
+    this.error$ = this.store.select(selectError);
+    this.userId$ = this.store.select(selectUserId);
+    this.hasLoaded$ = this.events$.pipe(
+      map(events => events.length > 0),
+      startWith(false)
+    );
     this.loadEvents();
   }
 
-  bookEvent(eventId: number) {
-    this.eventsService.bookEvent(eventId).subscribe({
-      next: (response) => {
-        console.log('Event booked successfully:', response);
-        this.loadEvents(); // Reload events to reflect booking
-      },
-      error: (err) => {
-        console.error('Error booking event:', err);
-      },
-    });
+  loadEvents(): void {
+    const category = this.selectedCategory === 'All' ? '' : this.selectedCategory;
+
+    const req: GetEventsRequest = {
+      category: category,
+      page: this.currentPage - 1,
+      size: this.pageSize,
+    };
+
+    this.store.dispatch(EventsActions.loadEvents({ request: req }));
+
+    this.events$.pipe(
+      take(1),
+      map(events => {
+        this.totalEvents = events.length;
+        this.totalPages = Math.ceil(this.totalEvents / this.pageSize);
+      })
+    ).subscribe();
   }
 
-  navToDetail(eventId: number): void {
+  navToDetail(eventId: string): void {
     this.router.navigate(['/events', eventId]);
   }
 
-  loadEvents(): void {
-    this.isLoading = true;
-    const category = this.selectedCategory === 'All' ? '' : this.selectedCategory;
-
-    this.eventsService
-      .getAllEvents(category, this.currentPage - 1, this.itemsPerPage)
-      .pipe(finalize(() => (this.isLoading = false)))
-      .subscribe({
-        next: (events) => {
-          this.events = events;
-          this.totalItems = events.length;
-        },
-        error: (err) => {
-          console.error('Error loading events:', err);
-        },
-      });
-  }
-
-  get categories(): string[] {
-    const categories = this.events.map((event) => event.category);
-    return ['All', ...new Set(categories)];
-  }
-
-  get filteredEvents() {
-    return this.events.filter((event) => {
-      const matchesSearch =
-        event.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        event.description.toLowerCase().includes(this.searchQuery.toLowerCase());
-      return matchesSearch;
+  bookEvent(eventId: string): void {
+    this.userId$.pipe(take(1)).subscribe(userId => {
+      if (userId) {
+        const request: BookEventRequest = { 
+          id: parseInt(eventId), 
+          userId: userId 
+        };
+        this.store.dispatch(EventsActions.bookEvent({ request }));
+        this.isBooking.set(true);
+        this.resetBookingState();
+      }
     });
   }
 
-  get paginatedEvents() {
-    return this.filteredEvents;
+  resetBookingState(): void {
+    setTimeout(() => {
+      this.isBooking.set(false);
+    }, 3000);
   }
 
-  get totalPages(): number {
-    return Math.ceil(this.totalItems / this.itemsPerPage);
+  get categories$(): Observable<string[]> {
+    return this.events$.pipe(
+      map((events) => {
+        const categories = events.map((event) => event.category);
+        return ['All', ...new Set(categories)];
+      }),
+    );
   }
 
-  getPageNumbers(): number[] {
-    const pages: number[] = [];
-    const maxVisiblePages = 5;
-
-    if (this.totalPages <= maxVisiblePages) {
-      for (let i = 1; i <= this.totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      let start = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
-      const end = Math.min(this.totalPages, start + maxVisiblePages - 1);
-
-      if (end - start + 1 < maxVisiblePages) {
-        start = end - maxVisiblePages + 1;
-      }
-
-      for (let i = start; i <= end; i++) {
-        pages.push(i);
-      }
+  // Pagination methods
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.loadEvents();
     }
-
-    return pages;
   }
 
-  changePage(page: number) {
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.loadEvents();
+    }
+  }
+
+  goToPage(page: number): void {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
       this.loadEvents();
     }
   }
 
-  onFilterChange() {
+  getPageNumbers(): number[] {
+    const pages = [];
+    const maxVisiblePages = 5;
+    
+    let startPage = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = startPage + maxVisiblePages - 1;
+    
+    if (endPage > this.totalPages) {
+      endPage = this.totalPages;
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    
+    return pages;
+  }
+
+  onFilterChange(): void {
     this.currentPage = 1;
     this.loadEvents();
   }
 
-  getDisplayRange(): string {
-    const start = (this.currentPage - 1) * this.itemsPerPage + 1;
-    const end = Math.min(this.currentPage * this.itemsPerPage, this.totalItems);
-    return `${start} - ${end}`;
+  get showingStart(): number {
+    return (this.currentPage - 1) * this.pageSize + 1;
+  }
+
+  get showingEnd(): number {
+    return Math.min(this.currentPage * this.pageSize, this.totalEvents);
   }
 }

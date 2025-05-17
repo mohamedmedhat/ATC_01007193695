@@ -7,6 +7,15 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { filter, take } from 'rxjs';
+import { AuthActions } from '../../store/auth/auth.action';
+import {
+  selectError,
+  selectIsLoading,
+  selectIsAuthenticated,
+} from '../../store/auth/auth.selector';
+import { RegisterRequest } from '../../store/auth/auth.model';
 
 @Component({
   selector: 'app-register',
@@ -26,11 +35,14 @@ import { Router, RouterLink } from '@angular/router';
 })
 export class RegisterComponent {
   private fb = inject(FormBuilder);
-  private authService = inject(AuthService);
   private router = inject(Router);
+  private store = inject(Store);
+
+  error$ = this.store.select(selectError);
+  isLoading$ = this.store.select(selectIsLoading);
 
   form: FormGroup = this.fb.group({
-    username: ['', Validators.required],
+    name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
     acceptTerms: [false, Validators.requiredTrue],
@@ -39,13 +51,18 @@ export class RegisterComponent {
   onSubmit() {
     if (this.form.invalid) return;
 
-    const { username, email, password } = this.form.value;
-    this.authService.register(username, email, password).subscribe({
-      next: (res) => {
-        console.log('Registered!', res);
+    const { name, email, password } = this.form.value;
+    const req: RegisterRequest = { name, email, password };
+    this.store.dispatch(AuthActions.register({ req }));
+
+    this.store
+      .select(selectIsAuthenticated)
+      .pipe(
+        filter((isAuth) => isAuth),
+        take(1),
+      )
+      .subscribe(() => {
         this.router.navigate(['/auth/login']);
-      },
-      error: (err) => console.error('Register failed:', err),
-    });
+      });
   }
 }

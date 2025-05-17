@@ -15,31 +15,26 @@ body {
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
-  min-height: 100vh;
-  overflow-x: hidden;
-  perspective: 1000px;
-  background: $animated-gradient;
-  animation: gradientBG 15s ease infinite;
-
+  position: relative;
+  
   &::before {
     content: '';
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
-    background-image:
-      radial-gradient(circle, rgba(0, 184, 148, 0.05) 1px, transparent 1px),
-      radial-gradient(circle, rgba(0, 184, 148, 0.05) 1px, transparent 1px);
-    background-size: 20px 20px;
-    background-position:
-      0 0,
-      10px 10px;
-    animation: particleMove 120s linear infinite;
+    height: 100vh;
+    background: $animated-gradient;
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    z-index: -2;
   }
 }
 
+.main-content {
+  position: relative;
+  z-index: 1;
+}
 input,
 .mat-input-element,
 input.mat-input-element {

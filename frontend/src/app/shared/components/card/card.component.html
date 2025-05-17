@@ -1,22 +1,22 @@
 <div
   class="card"
   tabindex="0"
-  (click)="nav()"
-  (keyup.enter)="nav()"
+  (click)="nav($event)"
+  (keyup.enter)="nav($event)"
   role="button"
   aria-pressed="false"
 >
-  <div class="img">
+  <div class="img" style="cursor: pointer;">
     <img src="{{ imageUrl }}" alt="{{ imageAlt }}" loading="lazy" />
   </div>
   <div class="content">
-    <h2>{{ title }}</h2>
+    <h2 style="cursor: pointer;">{{ title }}</h2>
     <p class="desc">{{ description }}</p>
     <div class="dtp">
       <p class="date">{{ date }}</p>
       <p class="price">{{ price }}$</p>
     </div>
-    <button (click)="book()" [disabled]="isBooked" [class.booked]="isBooked">
+    <button (click)="book($event)" [disabled]="isBooked" [class.booked]="isBooked">
       {{ !isBooked ? 'Book Now' : 'Booked' }}
     </button>
   </div>

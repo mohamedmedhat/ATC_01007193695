@@ -1,6 +1,6 @@
 <div class="login-wrapper">
   <div class="login-card" [formGroup]="form">
-    <form (ngSubmit)="onSubmit()">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <h1 class="title">Login</h1>
 
       <mat-form-field appearance="outline" class="full-width">

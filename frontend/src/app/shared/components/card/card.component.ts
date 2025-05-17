@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-card',
@@ -9,6 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class CardComponent {
   @Input() isBooked: boolean = false;
+  @Input() eventId: string = '';
   @Input() title: string = '';
   @Input() description: string = '';
   @Input() imageUrl: string = '';
@@ -16,20 +16,17 @@ export class CardComponent {
   @Input() date: string = '';
   @Input() price: number = 0;
   @Input() category: string = '';
-  @Output() navtoDetail = new EventEmitter<void>();
-  @Output() bookEvent = new EventEmitter<void>();
+  @Output() navToDetail = new EventEmitter<string>();
+  @Output() bookEvent = new EventEmitter<string>();
 
-  book(): Observable<void> {
-    return new Observable((observer) => {
-      observer.next(this.bookEvent.emit());
-      observer.complete();
-    });
+
+  book(event: MouseEvent) {
+    event.stopPropagation();
+    this.bookEvent.emit(this.eventId);
   }
 
-  nav(): Observable<void> {
-    return new Observable((observer) => {
-      observer.next(this.navtoDetail.emit());
-      observer.complete();
-    });
+  nav(event: Event) {
+    event.stopPropagation();
+    this.navToDetail.emit(this.eventId);
   }
 }

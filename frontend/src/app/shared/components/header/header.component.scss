@@ -2,19 +2,34 @@
 @use '../../../../styles/variables' as *;
 @use '../../../../styles/mixins' as *;
 
-// Base Nav Styling
+:host {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: $header-height;
+
+}
+
+.active-link {
+  color: $primary-color !important;
+  font-weight: 600 !important;
+
+  &::after {
+    width: 100% !important;
+  }
+}
+
 nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 40px;
   margin-bottom: 30px;
-  height: $header-height;
+  height: 100%;
   width: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
   z-index: 100;
   transition: all 0.4s ease;
   box-sizing: border-box;
@@ -63,6 +78,7 @@ nav {
     background: linear-gradient(45deg, $primary-color, $light-color 50%, $primary-color);
     background-size: 200% auto;
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: textShine 3s linear infinite;
 
@@ -313,6 +329,7 @@ body.light-theme {
     background: linear-gradient(45deg, $accent-color, $secondary-color 50%, $accent-color);
     background-size: 200% auto;
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
   }
 

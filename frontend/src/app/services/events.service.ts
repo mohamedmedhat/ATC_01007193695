@@ -1,51 +1,65 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { eventResponse } from '../shared/models/events,model';
 import { URLS } from '../../environments/urls.env';
 import { Observable } from 'rxjs';
+import {
+  BookedEventResponse,
+  BookEventRequest,
+  EventResponse,
+  GetBookedEventsRequest,
+  GetEventsRequest,
+} from '../store/events/events.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EventsService {
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) { }
 
-  getAllEvents(category: string, page: number, size: number): Observable<eventResponse[]> {
-    let params = new HttpParams().set('page', page.toString()).set('size', size.toString());
+  getAllEvents(req: GetEventsRequest): Observable<EventResponse[]> {
+    let params = new HttpParams().set('page', req.page.toString()).set('size', req.size.toString());
 
-    if (category) {
-      params = params.set('category', category);
+    if (req.category) {
+      params = params.set('category', req.category);
     }
 
-    return this.http.get<eventResponse[]>(URLS.EVENTS.PUBLIC.GET_ALL, { params });
+    return this.http.get<EventResponse[]>(URLS.EVENTS.PUBLIC.GET_ALL, { params });
   }
 
-  getEventById(id: number): Observable<eventResponse> {
-    return this.http.get<eventResponse>(URLS.EVENTS.PUBLIC.GET_BY_ID(id));
+  getEvent(id: number): Observable<EventResponse> {
+    return this.http.get<EventResponse>(URLS.EVENTS.PUBLIC.GET_BY_ID(id));
   }
 
-  bookEvent(id: number): Observable<string> {
-    return this.http.post<string>(URLS.EVENTS.PUBLIC.BOOK_EVENT(id), {});
+  bookEvent(req: BookEventRequest): Observable<BookedEventResponse> {
+    return this.http.post<BookedEventResponse>(
+      URLS.EVENTS.PUBLIC.BOOK_EVENT(req.id, req.userId),
+      {},
+    );
   }
 
-  cancelEvent(id: number): Observable<string> {
-    return this.http.post<string>(URLS.EVENTS.PUBLIC.CANCEL_EVENT(id), {});
+  cancelEvent(req: BookEventRequest): Observable<BookedEventResponse> {
+    return this.http.post<BookedEventResponse>(
+      URLS.EVENTS.PUBLIC.CANCEL_EVENT(req.id, req.userId),
+      {},
+    );
   }
 
-  getBookedEvents(userId: string): Observable<eventResponse[]> {
-    return this.http.get<eventResponse[]>(URLS.EVENTS.PUBLIC.GET_BOOKED(userId));
+  getBookedEvents(req: GetBookedEventsRequest): Observable<EventResponse[]> {
+    return this.http.get<EventResponse[]>(
+      URLS.EVENTS.PUBLIC.GET_BOOKED(req.userId, req.page, req.size),
+    );
   }
 
-  isEventBooked(eventId: number): Observable<boolean> {
-    return this.http.get<boolean>(URLS.EVENTS.PUBLIC.IS_EVENT_BOOKED(eventId));
+  isEventBooked(req: BookEventRequest): Observable<boolean> {
+    return this.http.get<boolean>(URLS.EVENTS.PUBLIC.IS_EVENT_BOOKED(req.id, req.userId));
   }
 
-  createEvent(event: eventResponse): Observable<eventResponse> {
-    return this.http.post<eventResponse>(URLS.EVENTS.ADMIN.CREATE, event);
+  createEvent(event: FormData): Observable<EventResponse> {
+    return this.http.post<EventResponse>(URLS.EVENTS.ADMIN.CREATE, event);
   }
 
-  updateEvent(id: number, event: eventResponse): Observable<eventResponse> {
-    return this.http.put<eventResponse>(URLS.EVENTS.ADMIN.UPDATE(id), event);
+  updateEvent(id: number, event: FormData): Observable<EventResponse> {
+    return this.http.put<EventResponse>(URLS.EVENTS.ADMIN.UPDATE(id), event);
   }
 
   deleteEvent(id: number): Observable<void> {

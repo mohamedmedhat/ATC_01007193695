@@ -1,11 +1,13 @@
+// events.component.scss
 @use '../../../styles/variables' as *;
-@use '../../../styles/_variables' as *;
 @use '../../../styles/_mixins' as *;
 
 .events-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 30px 20px;
+  width: 100%;
+  min-height: calc(100vh - 100px);
 }
 
 .controls {
@@ -14,13 +16,24 @@
   align-items: center;
   margin-bottom: 30px;
   gap: 20px;
-  flex-wrap: wrap;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 .filter-controls {
   display: flex;
   gap: 15px;
-  flex-wrap: wrap;
+  flex: 1;
+  max-width: 800px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 10px;
+  }
 }
 
 .category-select,
@@ -35,6 +48,8 @@
   font-size: 14px;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  min-width: 200px;
 
   &:focus {
     outline: none;
@@ -47,17 +62,14 @@
   }
 }
 
-.pagination-info {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 14px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-}
-
 .cards-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 30px;
   margin-bottom: 40px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
 }
 
 .pagination-container {
@@ -66,7 +78,7 @@
   align-items: center;
   gap: 10px;
   margin-top: 30px;
-  flex-wrap: wrap;
+  width: 100%;
 }
 
 .page-numbers {
@@ -91,14 +103,10 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   min-width: 40px;
   text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
   &:hover:not(:disabled) {
     background: rgba($primary-color, 0.2);
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
   }
 
   &:disabled {
@@ -109,40 +117,47 @@
   &.active {
     background: linear-gradient(135deg, $primary-color, darken($primary-color, 10%));
     color: white;
-    box-shadow: 0 4px 15px rgba($primary-color, 0.3);
   }
 }
 
-.prev-next {
-  padding: 10px 20px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
+.loading-spinner,
+.error-message {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+  color: $light-color;
+  width: 100%;
 }
 
-@media (max-width: 768px) {
-  .controls {
-    flex-direction: column;
-    align-items: stretch;
-  }
+.error-message {
+  color: $error-color;
+}
 
-  .filter-controls {
-    flex-direction: column;
-    gap: 10px;
+.card-skeleton {
+  height: 350px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.05),
+      transparent
+    );
+    animation: shimmer 1.5s infinite;
   }
+}
 
-  .pagination-container {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .page-numbers {
-    order: -1;
-    margin-bottom: 10px;
-  }
-
-  .prev-next {
-    width: 100%;
-    justify-content: center;
-  }
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
