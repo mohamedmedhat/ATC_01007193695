@@ -1,1 +1,166 @@
-<p>admin works!</p>
+<div class="admin-container">
+  <div class="admin-header">
+    <h1>Event Management Dashboard</h1>
+    <div class="search-bar">
+      <input type="text" [(ngModel)]="searchQuery" placeholder="Search events..." />
+    </div>
+  </div>
+
+  <div class="admin-content">
+    <div class="form-section">
+      <div class="form-card">
+        <h2>{{ isEditing ? 'Edit Event' : 'Create New Event' }}</h2>
+        <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label for="event-title">Title</label>
+            <input id="event-title" type="text" formControlName="name" />
+            @if (eventForm.get('name')?.invalid && eventForm.get('name')?.touched) {
+              <div class="error-message">Title is required</div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="event-description">Description</label>
+            <textarea id="event-description" formControlName="description" rows="3"></textarea>
+            @if (eventForm.get('description')?.invalid && eventForm.get('description')?.touched) {
+              <div class="error-message">Description is required</div>
+            }
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="event-images">Images</label>
+              <label class="custom-upload">
+                <input
+                  id="event-images"
+                  type="file"
+                  multiple
+                  (change)="onFileSelected($event)"
+                  accept="image/*"
+                />
+                <span class="upload-btn-text">📷 Upload Images</span>
+              </label>
+              <div class="image-previews">
+                @for (preview of imagePreviews; track preview) {
+                  <div class="preview-item">
+                    <img [src]="preview" alt="Image preview" />
+                    <button
+                      type="button"
+                      class="remove-btn"
+                      (click)="removePreview($index)"
+                      aria-label="Remove image"
+                    >
+                      ×
+                    </button>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="event-date">Date</label>
+              <input id="event-date" type="date" formControlName="date" />
+              @if (eventForm.get('date')?.invalid && eventForm.get('date')?.touched) {
+                <div class="error-message">Date is required</div>
+              }
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="event-price">Price ($)</label>
+              <input id="event-price" type="number" formControlName="price" min="0" step="0.01" />
+              @if (eventForm.get('price')?.invalid && eventForm.get('price')?.touched) {
+                <div class="error-message">
+                  @if (eventForm.get('price')?.errors?.['required']) {
+                    Price is required
+                  }
+                  @if (eventForm.get('price')?.errors?.['min']) {
+                    Price must be positive
+                  }
+                </div>
+              }
+            </div>
+
+            <div class="form-group">
+              <label for="event-category">Category</label>
+              <select id="event-category" formControlName="category">
+                <option value="" disabled selected>Select a category</option>
+                <option value="Music">Music</option>
+                <option value="Sports">Sports</option>
+                <option value="Arts">Arts</option>
+                <option value="Theater">Theater</option>
+              </select>
+              @if (eventForm.get('category')?.invalid && eventForm.get('category')?.touched) {
+                <div class="error-message">Category is required</div>
+              }
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="event-venue">Venue</label>
+            <input id="event-venue" type="text" formControlName="venue" />
+            @if (eventForm.get('venue')?.invalid && eventForm.get('venue')?.touched) {
+              <div class="error-message">Venue is required</div>
+            }
+          </div>
+
+          <div class="form-group checkbox-group">
+            <label>
+              <input type="checkbox" formControlName="isBooked" />
+              Booked
+            </label>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="submit-btn" [disabled]="!eventForm.valid">
+              {{ isEditing ? 'Update' : 'Create' }}
+            </button>
+            @if (isEditing) {
+              <button type="button" class="cancel-btn" (click)="resetForm()">Cancel</button>
+            }
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="events-section">
+      <h2>All Events</h2>
+      @if (isLoading$ | async) {
+        <div class="loading">Loading events...</div>
+      } @else {
+        <div class="events-grid">
+          @for (event of filteredEvents$ | async; track event.id) {
+            <div class="event-card">
+              <div class="event-image">
+                @if (event.images && event.images.length > 0) {
+                  <img [src]="event.images[0].url" [alt]="event.name" />
+                } @else {
+                  <div class="no-image">No Image</div>
+                }
+              </div>
+              <div class="event-details">
+                <h3>{{ event.name }}</h3>
+                <p class="event-description">{{ event.description }}</p>
+                <div class="event-meta">
+                  <span class="event-category">{{ event.category }}</span>
+                  <span class="event-price">${{ event.price | number: '1.2-2' }}</span>
+                  <span class="event-date">{{ event.date | date }}</span>
+                  <!-- <span class="event-status" [class.booked]="event.isBooked">
+                    {{ event.isBooked ? 'Booked' : 'Available' }}
+                  </span> -->
+                </div>
+              </div>
+              <div class="event-actions">
+                <button class="edit-btn" (click)="editEvent(event)">Edit</button>
+                <button class="delete-btn" (click)="deleteEvent(event.id)">Delete</button>
+              </div>
+            </div>
+          } @empty {
+            <div class="no-events">No events found</div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

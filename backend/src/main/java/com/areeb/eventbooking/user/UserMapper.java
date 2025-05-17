@@ -20,6 +20,9 @@ public class UserMapper {
     LoginResponseDto toLoginResponseDto(User user, String access_token, String refresh_token) {
         return new LoginResponseDto(
                 user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getRoles(),
                 access_token,
                 refresh_token);
     }

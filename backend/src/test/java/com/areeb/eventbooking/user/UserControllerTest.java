@@ -48,7 +48,7 @@ class UserControllerTest {
         id = UUID.randomUUID();
         request = new LoginRequestDto("moa@gmail.com", "jdgk@#23ds");
         registerRequest = new RegisterRequestDto("Areeb", "moa@gmail.com", "jdgk@#23ds", Set.of(Role.USER));
-        loginResponse = new LoginResponseDto(id, "kwk", "wefhj");
+        loginResponse = new LoginResponseDto(id, "Areeb", "moa@gmail.com", Set.of(Role.USER), "kwk", "wefhj");
         registerResponse = new RegisterResponseDto(id, "Areeb", "moa@gmail.com", Set.of(Role.USER));
     }
 

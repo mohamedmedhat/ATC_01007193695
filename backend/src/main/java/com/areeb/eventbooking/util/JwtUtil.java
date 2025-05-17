@@ -46,6 +46,14 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
+    public Boolean isTokenValid(String token) {
+        try {
+            return !isTokenExpired(token);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public String generateToken(User userDetails) {
         return Jwts.builder()
                 .setSubject(userDetails.getEmail())

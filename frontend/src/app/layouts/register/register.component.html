@@ -1,15 +1,13 @@
 <div class="register-wrapper">
   <div class="register-card" [formGroup]="form">
-    <form (ngSubmit)="onSubmit()">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <h1 class="title">Create Account</h1>
 
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Username</mat-label>
-        <input matInput formControlName="username" placeholder="Your username" />
+        <input matInput formControlName="name" placeholder="Your name" />
         <mat-icon matSuffix>person</mat-icon>
-        <mat-error *ngIf="form.get('username')?.hasError('required')">
-          Username is required
-        </mat-error>
+        <mat-error *ngIf="form.get('name')?.hasError('required')"> Username is required </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="full-width">
@@ -40,8 +38,12 @@
         You must accept the terms.
       </div>
 
+      <div class="reg-link">
+        <p>Have account ? <a routerLink="/auth/login">login now</a></p>
+      </div>
+
       <button mat-raised-button color="primary" class="register-btn" [disabled]="form.invalid">
-        Register
+        {{ (isLoading$ | async) ? 'Registering Now...' : 'Register' }}
       </button>
     </form>
   </div>

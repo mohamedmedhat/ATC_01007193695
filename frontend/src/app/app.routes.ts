@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
+import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
   {
@@ -9,16 +11,19 @@ export const routes: Routes = [
   {
     path: 'events',
     title: 'EventBooking - events',
+    canActivate: [authGuard],
     loadComponent: () => import('./layouts/events/events.component').then((e) => e.EventsComponent),
   },
   {
     path: 'events/:id',
     title: 'EventBooking - event',
+    canActivate: [authGuard],
     loadComponent: () => import('./layouts/event/event.component').then((e) => e.EventComponent),
   },
   {
-    path: ':name/events',
+    path: 'myevents',
     title: 'EventBooking - myEvents',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./layouts/my-events/my-events.component').then((m) => m.MyEventsComponent),
   },
@@ -41,6 +46,7 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
+    canActivate: [adminGuard],
     loadChildren: () => [
       {
         path: 'dashboard',

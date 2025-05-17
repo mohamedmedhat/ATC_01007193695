@@ -1,0 +1,366 @@
+@use '../styles/_variables.scss' as *;
+
+@keyframes particleMove {
+  0% {
+    background-position:
+      0 0,
+      10px 10px;
+  }
+
+  100% {
+    background-position:
+      1000px 1000px,
+      1010px 1010px;
+  }
+}
+
+@keyframes gradientBG {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes cardEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(50px) rotateX(-10deg) scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) rotateX(0) scale(1);
+  }
+}
+
+@keyframes floatingCircles {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateY(-15px) scale(1.1);
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes neonPulse {
+  from {
+    text-shadow:
+      0 0 5px $primary-color,
+      0 0 10px $primary-color;
+  }
+
+  to {
+    text-shadow: $neon-glow;
+  }
+}
+
+@keyframes lineExpand {
+  0% {
+    width: 0;
+    opacity: 0;
+  }
+
+  30% {
+    width: 60px;
+    opacity: 1;
+  }
+
+  70% {
+    width: 60px;
+    opacity: 1;
+  }
+
+  100% {
+    width: 0;
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+}
+
+@keyframes iconBounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+
+  40% {
+    transform: translateY(-10px);
+  }
+
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes errorPulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes typeError {
+  from {
+    width: 0;
+  }
+
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes borderGradient {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes buttonRipple {
+  0% {
+    transform: scale(0, 0);
+    opacity: 0.7;
+  }
+
+  20% {
+    transform: scale(25, 25);
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(40, 40);
+  }
+}
+
+@keyframes loaderSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes cursorBlink {
+  from,
+  to {
+    caret-color: transparent;
+  }
+
+  50% {
+    caret-color: $primary-color;
+  }
+}
+
+@keyframes typingAssist {
+  0%,
+  100% {
+    max-width: 0;
+  }
+
+  50%,
+  70% {
+    max-width: 100%;
+  }
+}
+
+@keyframes successCheck {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInError {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ticketEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(50px) rotateX(-15deg) scale(0.9);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotateX(0) scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scanEffect {
+  0% {
+    top: 0%;
+    opacity: 1;
+  }
+
+  20% {
+    opacity: 0.5;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  80% {
+    opacity: 0.5;
+  }
+
+  100% {
+    top: 100%;
+    opacity: 1;
+  }
+}
+
+@keyframes lightScan {
+  0% {
+    transform: rotate(45deg) translateY(-50%);
+  }
+
+  100% {
+    transform: rotate(45deg) translateY(150%);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.2;
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 0.3;
+  }
+}
+
+@keyframes float1 {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  100% {
+    transform: translateY(-100px) rotate(10deg) scale(1.1);
+  }
+}
+
+@keyframes float2 {
+  0% {
+    transform: translateX(0) rotate(0deg) scale(0.8);
+  }
+  100% {
+    transform: translateX(80px) rotate(-5deg) scale(1);
+  }
+}
+
+@keyframes float3 {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(1.2);
+  }
+  100% {
+    transform: translateY(120px) rotate(10deg) scale(1);
+  }
+}
+
+@keyframes float4 {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(0.9);
+  }
+  100% {
+    transform: translate(-70px, -50px) rotate(-15deg) scale(1.1);
+  }
+}
+
+@keyframes borderPulse {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes textShine {
+  to {
+    background-position: 200% center;
+  }
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bookedPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

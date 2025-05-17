@@ -1,6 +1,6 @@
 <div class="login-wrapper">
   <div class="login-card" [formGroup]="form">
-    <form (ngSubmit)="onSubmit()">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <h1 class="title">Login</h1>
 
       <mat-form-field appearance="outline" class="full-width">
@@ -24,9 +24,16 @@
         </mat-error>
       </mat-form-field>
 
+      <div class="reg-link">
+        <p>Don't have account ? <a routerLink="/auth/register">register now</a></p>
+      </div>
+
       <button mat-raised-button color="primary" class="login-btn" [disabled]="form.invalid">
-        login
+        {{ (isLoading$ | async) ? 'Logging in...' : 'Login' }}
       </button>
     </form>
+    <div *ngIf="error$ | async as error" class="error-message">
+      {{ error }}
+    </div>
   </div>
 </div>

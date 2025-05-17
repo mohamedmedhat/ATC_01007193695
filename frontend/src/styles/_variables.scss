@@ -1,0 +1,33 @@
+// colors.scss
+@use 'sass:color';
+
+// Base Colors
+$primary-color: #00b894;
+$secondary-color: #005c45;
+$accent-color: #00483b;
+$dark-color: #121212;
+$light-color: #ffffff;
+$error-color: #e74c3c;
+$success-color: #2ed573;
+
+// Theme Variables
+$dark-bg: $dark-color;
+$light-bg: #f7f9f9;
+
+// Gradients - Define both dark and light versions
+$dark-gradient: linear-gradient(-45deg, #121212, #1e272e, #005c45, #00332b);
+$light-gradient: linear-gradient(-45deg, #e0e0e0, #d1d9dd, #80b4a2, #80a69f);
+
+// Other Variables
+$glass-background: rgba(0, 0, 0, 0.75);
+$blur-effect: 15px;
+$neon-glow:
+  0 0 10px rgba(0, 184, 148, 0.7),
+  0 0 20px rgba(0, 184, 148, 0.5),
+  0 0 30px rgba(0, 184, 148, 0.3);
+$ticket-edge-color: rgba(255, 255, 255, 0.2);
+$hover-transition: 0.3s ease;
+$glass-effect: rgba(0, 0, 0, 0.75);
+$header-height: 80px;
+$mobile-breakpoint: 768px;
+$glow-effect: 0 0 10px rgba(0, 184, 148, 0.4);

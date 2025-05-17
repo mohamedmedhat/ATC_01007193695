@@ -114,7 +114,7 @@ public class UserServiceTest {
         ReflectionTestUtils.setField(userServiceImpl, "cookieUtil", cookieUtil);
 
         when(userMapper.toLoginResponseDto(user, "jwt-token", "refresh-token"))
-                .thenReturn(new LoginResponseDto(id, "jwt-token", "refresh-token"));
+                .thenReturn(new LoginResponseDto(id, "User", "user@mail.com", Set.of(Role.USER) ,"jwt-token", "refresh-token"));
 
         LoginResponseDto response = userServiceImpl.login(dto);
 

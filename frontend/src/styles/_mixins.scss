@@ -1,0 +1,407 @@
+@use '../styles/variables' as *;
+@use '../styles/animations' as *;
+
+// _mixins.scss
+@mixin auth-background {
+  // Remove position: relative if present
+  background: $animated-gradient;
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  width: 100%;
+  min-height: 100vh;
+
+  // Adjust particle overlay to account for header
+  &::before {
+    content: '';
+    position: fixed; // Changed from absolute to fixed
+    top: $header-height; // Start below header
+    left: 0;
+    width: 100%;
+    height: calc(100vh - #{$header-height});
+    background-image:
+      radial-gradient(circle, rgba(0, 184, 148, 0.05) 1px, transparent 1px),
+      radial-gradient(circle, rgba(0, 184, 148, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
+    animation: particleMove 120s linear infinite;
+    z-index: -1;
+  }
+}
+// Card styling mixin
+@mixin auth-card($max-width: 450px) {
+  width: 100%;
+  max-width: $max-width;
+  padding: 40px;
+  border-radius: 20px;
+  background: $glass-background;
+  backdrop-filter: blur($blur-effect);
+  -webkit-backdrop-filter: blur($blur-effect);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transform-style: preserve-3d;
+  animation: cardEntrance 1.2s ease-out forwards;
+  position: relative;
+  overflow: hidden;
+
+  // Floating gradient circle decorations
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    z-index: -1;
+    filter: blur(35px);
+    animation: floatingCircles 12s ease-in-out infinite alternate;
+  }
+
+  &::before {
+    width: 150px;
+    height: 150px;
+    background: rgba($secondary-color, 0.4);
+    top: -75px;
+    right: -75px;
+  }
+
+  &::after {
+    width: 200px;
+    height: 200px;
+    background: rgba($accent-color, 0.4);
+    bottom: -100px;
+    left: -100px;
+    animation-delay: -6s;
+  }
+
+  // 3D hover effect
+  &:hover {
+    transform: translateZ(20px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: relative;
+    z-index: 1;
+  }
+}
+
+// Title styling mixin
+@mixin auth-title {
+  color: $light-color;
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 25px;
+  position: relative;
+  text-shadow: $neon-glow;
+  letter-spacing: 2px;
+  animation: neonPulse 1.5s ease-in-out infinite alternate;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    width: 60px;
+    height: 4px;
+    background: $light-color;
+    border-radius: 4px;
+    transform: translateX(-50%);
+    box-shadow: $neon-glow;
+    animation: lineExpand 3s ease infinite;
+  }
+}
+
+// Form field styling mixin
+@mixin auth-form-field {
+  width: 100%;
+  position: relative;
+
+  &.full-width {
+    margin-bottom: 5px;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    &:focus-within {
+      transform: translateY(-5px) scale(1.03);
+
+      // Enhance input field on focus
+      ::ng-deep .mat-form-field-flex {
+        border-left: 3px solid $primary-color;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+
+  // Custom styling for Material inputs
+  ::ng-deep {
+    .mat-form-field-flex {
+      background-color: rgba(18, 18, 18, 0.9);
+      border-radius: 12px !important;
+      padding: 0.75em 0.75em 0 0.75em !important;
+      transition: all 0.3s ease;
+    }
+
+    .mat-form-field-outline {
+      display: none;
+    }
+
+    .mat-form-field-infix {
+      padding: 0.5em 0 1em 0;
+    }
+
+    .mat-form-field-label-wrapper {
+      top: -1em;
+    }
+
+    .mat-form-field-label {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .mat-input-element {
+      color: $light-color;
+      caret-color: $primary-color;
+    }
+
+    .mat-form-field-underline {
+      display: none;
+    }
+
+    .mat-form-field-ripple {
+      background-color: $primary-color;
+    }
+
+    .mat-icon {
+      color: rgba(255, 255, 255, 0.7);
+      opacity: 0.7;
+      transition: all 0.3s ease;
+    }
+
+    // Floating label effect
+    .mat-form-field.mat-focused .mat-form-field-label {
+      color: $primary-color;
+    }
+
+    // Icon animation on focus
+    &:focus-within .mat-icon {
+      color: $primary-color;
+      opacity: 1;
+      animation: iconBounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    // Error messages with animated appearance
+    .mat-error {
+      font-size: 12px;
+      position: relative;
+      overflow: hidden;
+      display: block;
+      padding-left: 20px;
+
+      // Animated error icon
+      &::before {
+        content: '!';
+        position: absolute;
+        left: 5px;
+        top: 0;
+        width: 14px;
+        height: 14px;
+        background: $error-color;
+        color: white;
+        border-radius: 50%;
+        font-size: 10px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: errorPulse 2s infinite;
+      }
+
+      // Appear with typing effect
+      animation: typeError 0.5s steps(30, end);
+    }
+  }
+}
+
+// Link styling mixin
+@mixin auth-link {
+  text-align: center;
+  margin-top: 20px;
+
+  p {
+    color: rgba(255, 255, 255, 0.8);
+    gap: 3rem;
+    font-size: 14px;
+
+    a {
+      color: $primary-color;
+      text-decoration: none;
+      font-weight: 600;
+      position: relative;
+      transition: all 0.3s ease;
+      padding: 0 4px;
+
+      &::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -2px;
+        left: 0;
+        background: $primary-color;
+        transition: width 0.3s ease;
+        box-shadow: 0 0 5px rgba($primary-color, 0.5);
+      }
+
+      &:hover {
+        color: lighten($primary-color, 10%);
+        text-shadow: 0 0 8px rgba($primary-color, 0.4);
+
+        &::after {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+
+// Button styling mixin
+@mixin auth-button {
+  background: linear-gradient(135deg, $primary-color, darken($primary-color, 15%));
+  color: $light-color;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  margin-top: 15px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 6px 15px rgba($primary-color, 0.3);
+  outline: none;
+  transform-style: preserve-3d;
+  z-index: 2;
+
+  // Animated gradient border
+  &::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    z-index: -1;
+    background: linear-gradient(
+      45deg,
+      $primary-color,
+      $secondary-color,
+      $accent-color,
+      $primary-color
+    );
+    background-size: 400% 400%;
+    border-radius: 50px;
+    animation: borderGradient 3s ease infinite;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  // Interactive effects
+  &:not([disabled]):hover {
+    transform: translateY(-5px) scale(1.02) rotateX(10deg);
+    box-shadow: 0 12px 20px rgba($primary-color, 0.4);
+
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  &:not([disabled]):active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 5px 10px rgba($primary-color, 0.4);
+  }
+
+  // Disabled state
+  &[disabled] {
+    background: linear-gradient(
+      135deg,
+      desaturate($primary-color, 50%),
+      darken(desaturate($primary-color, 50%), 15%)
+    );
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  // Ripple animation on click
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.7);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%, -50%);
+    transform-origin: 50% 50%;
+  }
+
+  &:not([disabled]):focus:not(:active)::after {
+    animation: buttonRipple 1s ease-out;
+  }
+}
+
+// Responsive mixin
+@mixin auth-responsive {
+  @media (max-width: 480px) {
+    padding: 30px 20px;
+    margin: 0 15px;
+
+    &::before,
+    &::after {
+      display: none; // Remove decorative elements on small screens
+    }
+
+    .title {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .auth-button {
+      padding: 10px 20px;
+      font-size: 15px;
+    }
+  }
+}
+
+// Additional effects mixins
+@mixin auth-input-effects {
+  // Floating input labels with special animation
+  .mat-form-field-label {
+    transition:
+      transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+      color 0.3s ease !important;
+  }
+
+  // Personalized touch - input typing effect
+  .mat-input-element:focus {
+    animation: cursorBlink 1s infinite;
+  }
+
+  // Card tilt effect (subtle mouse tracking)
+  transform: perspective(1000px) rotateX(0) rotateY(0);
+  transition: transform 0.5s ease;
+
+  // Input field typing assist effect
+  .mat-input-element::placeholder {
+    animation: typingAssist 5s steps(30, end) infinite;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+    max-width: 100%;
+  }
+}

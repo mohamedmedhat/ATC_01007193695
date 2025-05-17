@@ -8,6 +8,8 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import com.areeb.eventbooking.user.User;
 import com.areeb.eventbooking.user.UserRepository;
@@ -21,14 +23,14 @@ public class CurrentUserArgumentResolver implements HandlerMethodArgumentResolve
     private final UserRepository userRepository;
 
     @Override
-    public boolean supportsParameter(MethodParameter parameter) {
+    public boolean supportsParameter(@NonNull MethodParameter parameter) {
         return parameter.getParameterAnnotation(CurrentUser.class) != null
                 && User.class.isAssignableFrom(parameter.getParameterType());
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
-            NativeWebRequest webRequest, @org.springframework.lang.Nullable WebDataBinderFactory binderFactory) {
+    public Object resolveArgument(@NonNull MethodParameter parameter,@Nullable ModelAndViewContainer mavContainer,
+            @NonNull NativeWebRequest webRequest,@Nullable WebDataBinderFactory binderFactory) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         return userRepository.findByEmail(username)
