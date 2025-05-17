@@ -29,4 +29,8 @@ public class RefreshTokenService {
             refreshTokenRepository.save(newToken);
         }
     }
+
+    public void deleteByToken(String token) {
+        refreshTokenRepository.deleteByToken(token);
+    }
 }

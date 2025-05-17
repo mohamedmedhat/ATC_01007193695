@@ -114,8 +114,12 @@ public class EventServiceImpl implements EventService {
     @Override
     public BookEventResponseDto cancelBooking(Long id, UUID userId) {
         Event event = this.eventRepository.findByIdAndUserId(id, userId);
-        this.eventRepository.delete(event);
-        return this.eventMapper.toBookEventResponseDto("event is canceled");
+
+        event.setUser(null);
+
+        eventRepository.save(event);
+
+        return this.eventMapper.toBookEventResponseDto("event booking is canceled");
     }
 
     @Override

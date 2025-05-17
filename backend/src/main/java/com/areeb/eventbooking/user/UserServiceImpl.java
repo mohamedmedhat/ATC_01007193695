@@ -7,6 +7,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.stereotype.Service;
 
 import com.areeb.eventbooking.common.refreshToken.RefreshTokenService;
+import com.areeb.eventbooking.common.refreshToken.dto.response.RefreshTokenResponseDto;
+import com.areeb.eventbooking.common.refreshToken.exceptions.InvalidTokenException;
 import com.areeb.eventbooking.user.dto.request.LoginRequestDto;
 import com.areeb.eventbooking.user.dto.request.RegisterRequestDto;
 import com.areeb.eventbooking.user.dto.response.LoginResponseDto;
@@ -18,6 +20,8 @@ import com.areeb.eventbooking.util.CookieUtil;
 import com.areeb.eventbooking.util.EncryptionUtil;
 import com.areeb.eventbooking.util.JwtUtil;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -66,6 +70,38 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = cookieUtil.getRefreshTokenFromCookie(request);
+        if (refreshToken != null) {
+            refreshTokenService.deleteByToken(refreshToken);
+        }
+        cookieUtil.clearRefreshTokenCookie(response);
+    }
+
+    @Override
+    public RefreshTokenResponseDto refreshToken(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = cookieUtil.getRefreshTokenFromCookie(request);
+        if (refreshToken == null) {
+            throw new InvalidTokenException("Refresh token not found");
+        }
+
+        if (!jwtUtil.isTokenValid(refreshToken)) {
+            throw new InvalidTokenException("Refresh token is invalid or expired");
+        }
+
+        String email = jwtUtil.extractEmail(refreshToken);
+        User user = getUserByEmail(email);
+
+        String newAccessToken = jwtUtil.generateToken(user);
+
+        String newRefreshToken = jwtUtil.generateRefreshToken(user);
+        refreshTokenService.saveOrUpdateRefreshToken(user, newRefreshToken);
+        cookieUtil.setInCookie(newRefreshToken);
+
+        return new RefreshTokenResponseDto(newAccessToken, newRefreshToken);
+    }
+
+    @Override
     public User getUser(UUID id) {
         return this.userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("user with id: " + id + " not found"));
@@ -79,5 +115,4 @@ public class UserServiceImpl implements UserService {
         return this.userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("user with email" + email + " not found"));
     }
-
 }

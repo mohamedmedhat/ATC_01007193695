@@ -4,11 +4,15 @@ import { Store } from '@ngrx/store';
 import { EventsActions } from '../../store/events/events.action';
 import { filter, Observable, of, take } from 'rxjs';
 import { BookEventRequest, EventResponse } from '../../store/events/events.model';
-import { selectError, selectEvent, selectIsLoading, selectUserId } from '../../store/events/events.selector';
+import {
+  selectError,
+  selectEvent,
+  selectIsLoading,
+  selectUserId,
+} from '../../store/events/events.selector';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faFacebook, faTwitter, faLinkedin } from '@fortawesome/free-brands-svg-icons';
-
 
 @Component({
   selector: 'app-event',
@@ -22,14 +26,17 @@ export class EventComponent implements OnInit {
   linkedInIcon = faLinkedin;
 
   isBooked = signal<boolean>(false);
-  eventId = signal<string>("");
+  eventId = signal<string>('');
 
   event$: Observable<EventResponse | null> = of(null);
   isLoading$: Observable<boolean> = of(false);
   error$: Observable<string | null> = of(null);
   userId$: Observable<string | undefined>;
 
-  constructor(private route: ActivatedRoute, private store: Store) {
+  constructor(
+    private route: ActivatedRoute,
+    private store: Store,
+  ) {
     this.userId$ = this.store.select(selectUserId);
   }
 
@@ -46,25 +53,27 @@ export class EventComponent implements OnInit {
   }
 
   bookEvent() {
-    this.userId$.pipe(
-      take(1),
-      filter((userId): userId is string => !!userId)
-    ).subscribe(userId => {
-      if (!userId) {
-        // Handle unauthenticated user (redirect to login?)
-        return;
-      }
+    this.userId$
+      .pipe(
+        take(1),
+        filter((userId): userId is string => !!userId),
+      )
+      .subscribe((userId) => {
+        if (!userId) {
+          // Handle unauthenticated user (redirect to login?)
+          return;
+        }
 
-      const request: BookEventRequest = {
-        id: Number(this.eventId()),
-        userId
-      };
-      this.store.dispatch(EventsActions.bookEvent({ request }));
-    });
+        const request: BookEventRequest = {
+          id: Number(this.eventId()),
+          userId,
+        };
+        this.store.dispatch(EventsActions.bookEvent({ request }));
+      });
   }
 
   shareEvent(platform: string) {
-    this.event$.pipe(take(1)).subscribe(event => {
+    this.event$.pipe(take(1)).subscribe((event) => {
       if (!event) return;
 
       const url = `${window.location.origin}/events/${event.id}`;
@@ -90,7 +99,7 @@ export class EventComponent implements OnInit {
     window.open(
       `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`,
       '_blank',
-      'width=600,height=400'
+      'width=600,height=400',
     );
   }
 
@@ -98,7 +107,7 @@ export class EventComponent implements OnInit {
     window.open(
       `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`,
       '_blank',
-      'width=600,height=400'
+      'width=600,height=400',
     );
   }
 
@@ -106,7 +115,7 @@ export class EventComponent implements OnInit {
     window.open(
       `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
       '_blank',
-      'width=600,height=400'
+      'width=600,height=400',
     );
   }
 

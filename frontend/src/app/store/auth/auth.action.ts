@@ -12,15 +12,15 @@ export const AuthActions = createActionGroup({
     'Auto Login Success': props<{ token: string }>(),
     'Auto Login Failure': emptyProps(),
 
-    'Login': props<{ req: LoginRequest }>(),
+    Login: props<{ req: LoginRequest }>(),
     'Login Success': props<{ response: LoginResponse }>(),
     'Login Failure': props<{ error: string }>(),
 
-    'Register': props<{ req: RegisterRequest }>(),
+    Register: props<{ req: RegisterRequest }>(),
     'Register Success': props<{ response: RegisterResponse }>(),
     'Register Failure': props<{ error: string }>(),
 
-    'Logout': emptyProps(),
+    Logout: emptyProps(),
     'Logout Success': emptyProps(),
     'Logout Failure': emptyProps(),
 

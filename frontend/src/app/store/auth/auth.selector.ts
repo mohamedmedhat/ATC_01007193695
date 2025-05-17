@@ -1,5 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { AuthState } from './auth.model';
+import { Role } from '../../shared/enums/Role.enum';
 
 export const selectAuthState = createFeatureSelector<AuthState>('auth');
 
@@ -19,6 +20,11 @@ export const selectIsLoading = createSelector(selectAuthState, (state) => state.
 export const selectError = createSelector(selectAuthState, (state) => state.error);
 
 export const selectLastActivity = createSelector(selectAuthState, (state) => state.lastActivity);
+
+export const selectUserRoles = createSelector(
+  selectAuthState,
+  (state) => (state.user?.roles || []) as Role[],
+);
 
 // Combined selector for multiple properties
 export const selectAuthStatus = createSelector(

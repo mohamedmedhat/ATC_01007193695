@@ -75,18 +75,20 @@ export const deleteEvent$ = createEffect(
         eventsService.deleteEvent(eventId).pipe(
           tap(() => console.log('Successfully deleted event ID:', eventId)),
           map(() => EventsActions.deleteEventSuccess({ eventId })),
-          catchError(error => {
+          catchError((error) => {
             console.error('Delete error for ID:', eventId, 'Error:', error);
-            return of(EventsActions.deleteEventFailure({ 
-              error: error.message,
-              eventId 
-            }));
-          })
-        )
-      )
+            return of(
+              EventsActions.deleteEventFailure({
+                error: error.message,
+                eventId,
+              }),
+            );
+          }),
+        ),
+      ),
     );
   },
-  { functional: true }
+  { functional: true },
 );
 
 export const BookEvent$ = createEffect(

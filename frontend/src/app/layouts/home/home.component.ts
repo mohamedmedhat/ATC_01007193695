@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { homeFeatures } from '../../../data/home.data';
+import { homeFeatures, testimonials } from '../../../data/home.data';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -11,4 +11,5 @@ import { RouterLink } from '@angular/router';
 })
 export class HomeComponent {
   features = homeFeatures;
+  testimonials = testimonials;
 }

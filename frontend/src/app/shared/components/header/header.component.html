@@ -5,18 +5,22 @@
 
   <ul>
     @for (item of links; track item.id) {
-    <li>
-      <a [routerLink]="item.route" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
-        {{ item.name }}
-      </a>
-    </li>
+      <li>
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="active-link"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          {{ item.name }}
+        </a>
+      </li>
     }
   </ul>
 
   <div class="theme-toggle">
     <div class="user-info">
       @if (userName$ | async; as userName) {
-      <span>Welcome, {{ userName }}</span>
+        <span>Welcome, {{ userName }}</span>
       }
       <button (click)="toggleAuth()">
         {{ (isLoggedIn() | async) ? 'Logout' : 'Login' }}

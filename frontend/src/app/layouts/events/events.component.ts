@@ -9,7 +9,7 @@ import { BookEventRequest, EventResponse, GetEventsRequest } from '../../store/e
 import { Store } from '@ngrx/store';
 import { selectIsLoading, selectError } from '../../store/auth/auth.selector';
 import { EventsActions } from '../../store/events/events.action';
-import { selectEvents, selectUserId } from '../../store/events/events.selector';
+import { selectBookingStatus, selectEvents, selectUserId } from '../../store/events/events.selector';
 
 @Component({
   selector: 'app-events',
@@ -38,7 +38,7 @@ export class EventsComponent implements OnInit {
   constructor(
     private store: Store,
     private router: Router,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.events$ = this.store.select(selectEvents);
@@ -46,8 +46,8 @@ export class EventsComponent implements OnInit {
     this.error$ = this.store.select(selectError);
     this.userId$ = this.store.select(selectUserId);
     this.hasLoaded$ = this.events$.pipe(
-      map(events => events.length > 0),
-      startWith(false)
+      map((events) => events.length > 0),
+      startWith(false),
     );
     this.loadEvents();
   }
@@ -63,37 +63,53 @@ export class EventsComponent implements OnInit {
 
     this.store.dispatch(EventsActions.loadEvents({ request: req }));
 
-    this.events$.pipe(
-      take(1),
-      map(events => {
-        this.totalEvents = events.length;
-        this.totalPages = Math.ceil(this.totalEvents / this.pageSize);
-      })
-    ).subscribe();
+    this.events$
+      .pipe(
+        take(1),
+        map((events) => {
+          this.totalEvents = events.length;
+          this.totalPages = Math.ceil(this.totalEvents / this.pageSize);
+        }),
+      )
+      .subscribe();
   }
 
   navToDetail(eventId: string): void {
     this.router.navigate(['/events', eventId]);
   }
 
-  bookEvent(eventId: string): void {
-    this.userId$.pipe(take(1)).subscribe(userId => {
-      if (userId) {
-        const request: BookEventRequest = { 
-          id: parseInt(eventId), 
-          userId: userId 
-        };
-        this.store.dispatch(EventsActions.bookEvent({ request }));
-        this.isBooking.set(true);
-        this.resetBookingState();
-      }
-    });
-  }
+// In your EventsComponent
+bookEvent(eventId: string): void {
+  this.userId$.pipe(take(1)).subscribe((userId) => {
+    if (userId) {
+      const request: BookEventRequest = {
+        id: parseInt(eventId),
+        userId: userId,
+      };
+      
+      // Dispatch check status first
+      this.store.dispatch(EventsActions.checkEventBookingStatus({ request }));
+      
+      // Then book if needed
+      this.store.dispatch(EventsActions.bookEvent({ request }));
+    }
+  });
+}
 
   resetBookingState(): void {
     setTimeout(() => {
       this.isBooking.set(false);
     }, 3000);
+  }
+
+  trackByEventId(index: number, event: EventResponse): string {
+    return event.id;
+  }
+
+  isEventBooked(eventId: string): Observable<boolean> {
+    return this.store.select(selectBookingStatus).pipe(
+      map(bookingStatus => bookingStatus[parseInt(eventId)] || false)
+    );
   }
 
   get categories$(): Observable<string[]> {
@@ -130,19 +146,19 @@ export class EventsComponent implements OnInit {
   getPageNumbers(): number[] {
     const pages = [];
     const maxVisiblePages = 5;
-    
+
     let startPage = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
     let endPage = startPage + maxVisiblePages - 1;
-    
+
     if (endPage > this.totalPages) {
       endPage = this.totalPages;
       startPage = Math.max(1, endPage - maxVisiblePages + 1);
     }
-    
+
     for (let i = startPage; i <= endPage; i++) {
       pages.push(i);
     }
-    
+
     return pages;
   }
 

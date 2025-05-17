@@ -6,11 +6,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.areeb.eventbooking.common.refreshToken.dto.response.RefreshTokenResponseDto;
 import com.areeb.eventbooking.user.dto.request.LoginRequestDto;
 import com.areeb.eventbooking.user.dto.request.RegisterRequestDto;
 import com.areeb.eventbooking.user.dto.response.LoginResponseDto;
 import com.areeb.eventbooking.user.dto.response.RegisterResponseDto;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +32,18 @@ public class UserController {
     @PostMapping("auth/register")
     public ResponseEntity<RegisterResponseDto> register(@Valid @RequestBody RegisterRequestDto request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.register(request));
+    }
+
+    @PostMapping("auth/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response) {
+        userService.logout(request, response);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PostMapping("auth/refresh-token")
+    public ResponseEntity<RefreshTokenResponseDto> refreshToken(HttpServletRequest request,
+            HttpServletResponse response) {
+        return ResponseEntity.ok(this.userService.refreshToken(request, response));
     }
 
 }

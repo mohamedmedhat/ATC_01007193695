@@ -1,35 +1,50 @@
-<!-- home.component.html -->
-<div class="home-container">
-  <section class="hero">
+<div class="home-container" style="gap: 30px">
+  <section class="hero" aria-label="Introduction">
     <div class="hero-content">
       <h1>Welcome to Eventify</h1>
       <p class="subtitle">Your gateway to unforgettable experiences</p>
-      <button class="cta-button" routerLink="/events">Browse Events</button>
+      <img src="home-hero.png" alt="People enjoying an event" />
+      <button class="cta-button" routerLink="/events" aria-label="Browse Events">
+        Browse Events
+      </button>
     </div>
   </section>
 
-  <section class="features">
-    <h2>Why Choose Us</h2>
-    <div class="feature-cards">
-      <div class="feature-card" *ngFor="let feature of features">
-        <div class="feature-icon">{{ feature.icon }}</div>
+  <section class="features" aria-labelledby="features-title">
+    <h2 id="features-title">Why Choose Eventify?</h2>
+    <div class="features-intro">
+      <div class="feature-description">
+        <h3>Feeling Bored?</h3>
+        <p>Join us and discover thrilling events around you!</p>
+      </div>
+      <img src="home-one.png" alt="Exciting event visual" />
+    </div>
+
+    <div class="join-us-section">
+      <h3>Become Part of Our Community</h3>
+      <img src="home-joinus.jpg" alt="Community joining image" />
+    </div>
+
+    <div class="feature-cards" role="list">
+      <div class="feature-card" *ngFor="let feature of features" role="listitem">
+        <div class="feature-icon" aria-hidden="true">{{ feature.icon }}</div>
         <h3>{{ feature.title }}</h3>
         <p>{{ feature.description }}</p>
       </div>
     </div>
   </section>
 
-  <section class="testimonials">
-    <h2>What Our Users Say</h2>
+  <section class="testimonials" aria-labelledby="testimonials-title">
+    <h2 id="testimonials-title">What Our Users Say</h2>
     <div class="testimonial-cards">
-      <div class="testimonial-card">
-        <p>"Found amazing concerts through this app!"</p>
-        <div class="user">- Alex M.</div>
-      </div>
-      <div class="testimonial-card">
-        <p>"Booking is so quick and easy."</p>
-        <div class="user">- Sarah K.</div>
-      </div>
+      <blockquote class="testimonial-card">
+        <p>“Found amazing concerts through this app!”</p>
+        <footer class="user">— Alex M.</footer>
+      </blockquote>
+      <blockquote class="testimonial-card">
+        <p>“Booking is so quick and easy.”</p>
+        <footer class="user">— Sarah K.</footer>
+      </blockquote>
     </div>
   </section>
 </div>

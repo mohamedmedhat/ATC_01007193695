@@ -13,7 +13,11 @@ import { Store } from '@ngrx/store';
 import { combineLatest, map, Observable, of } from 'rxjs';
 import { EventsActions } from '../../store/events/events.action';
 import { selectIsLoading, selectError } from '../../store/auth/auth.selector';
-import { selectBookingStatus, selectEvents, selectUserId } from '../../store/events/events.selector';
+import {
+  selectBookingStatus,
+  selectEvents,
+  selectUserId,
+} from '../../store/events/events.selector';
 
 @Component({
   selector: 'app-admin',
@@ -37,7 +41,6 @@ export class AdminComponent implements OnInit {
   imagePreviews: string[] = [];
 
   filteredEvents$: Observable<EventResponse[]> = of([]);
-
 
   constructor(
     private fb: FormBuilder,
@@ -70,15 +73,16 @@ export class AdminComponent implements OnInit {
     this.filteredEvents$ = combineLatest([this.events$, this.bookingStatus$]).pipe(
       map(([events, bookingStatus]) => {
         return events
-          .filter(event =>
-            event.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-            event.description.toLowerCase().includes(this.searchQuery.toLowerCase())
+          .filter(
+            (event) =>
+              event.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+              event.description.toLowerCase().includes(this.searchQuery.toLowerCase()),
           )
-          .map(event => ({
+          .map((event) => ({
             ...event,
-            isBooked: bookingStatus[Number(event.id)] || false
+            isBooked: bookingStatus[Number(event.id)] || false,
           }));
-      })
+      }),
     );
   }
 
@@ -94,7 +98,7 @@ export class AdminComponent implements OnInit {
       this.imagePreviews = [];
 
       // Create previews for selected files
-      Array.from(input.files).forEach(file => {
+      Array.from(input.files).forEach((file) => {
         const reader = new FileReader();
         reader.onload = (e: ProgressEvent<FileReader>) => {
           if (e.target && typeof e.target.result === 'string') {
@@ -111,12 +115,12 @@ export class AdminComponent implements OnInit {
       const formData = new FormData();
 
       // Append all form fields
-      Object.keys(this.eventForm.value).forEach(key => {
+      Object.keys(this.eventForm.value).forEach((key) => {
         formData.append(key, this.eventForm.value[key]);
       });
 
       // Append each image file
-      this.selectedFiles.forEach(file => {
+      this.selectedFiles.forEach((file) => {
         formData.append('images', file, file.name);
       });
 
@@ -129,13 +133,13 @@ export class AdminComponent implements OnInit {
     if (this.eventForm.valid && this.currentEventId) {
       const formData = new FormData();
 
-      Object.keys(this.eventForm.value).forEach(key => {
+      Object.keys(this.eventForm.value).forEach((key) => {
         formData.append(key, this.eventForm.value[key]);
       });
 
       // Only append new files if they were selected
       if (this.selectedFiles.length > 0) {
-        this.selectedFiles.forEach(file => {
+        this.selectedFiles.forEach((file) => {
           formData.append('images', file, file.name);
         });
       }
@@ -143,8 +147,8 @@ export class AdminComponent implements OnInit {
       this.store.dispatch(
         EventsActions.updateEvent({
           eventId: this.currentEventId,
-          event: formData
-        })
+          event: formData,
+        }),
       );
       this.resetForm();
     }
@@ -158,7 +162,7 @@ export class AdminComponent implements OnInit {
 
     // Set existing images as previews
     if (event.images && event.images.length > 0) {
-      this.imagePreviews = event.images.map(img => img.url);
+      this.imagePreviews = event.images.map((img) => img.url);
     }
 
     this.eventForm.patchValue({
@@ -180,14 +184,15 @@ export class AdminComponent implements OnInit {
   }
 
   checkBookingStatus(eventId: number) {
-    this.userId$.subscribe(userId => {
-      if (userId) {
-        const request: BookEventRequest = { id: eventId, userId };
-        this.store.dispatch(EventsActions.checkEventBookingStatus({ request }));
-      }
-    }).unsubscribe();
+    this.userId$
+      .subscribe((userId) => {
+        if (userId) {
+          const request: BookEventRequest = { id: eventId, userId };
+          this.store.dispatch(EventsActions.checkEventBookingStatus({ request }));
+        }
+      })
+      .unsubscribe();
   }
-
 
   deleteEvent(id: string) {
     if (!confirm('Are you sure you want to delete this event?')) {

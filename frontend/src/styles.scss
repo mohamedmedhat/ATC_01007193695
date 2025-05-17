@@ -1,6 +1,6 @@
 @use './styles/variables' as *;
-@use './styles/_mixins' as *;
-@use './styles/_animations' as *;
+@use './styles/mixins' as *;
+@use './styles/animations' as *;
 
 * {
   box-sizing: border-box;
@@ -16,7 +16,9 @@ body {
 
 body {
   position: relative;
-  
+  background: $dark-bg;
+  color: $light-color;
+
   &::before {
     content: '';
     position: fixed;
@@ -24,10 +26,20 @@ body {
     left: 0;
     width: 100%;
     height: 100vh;
-    background: $animated-gradient;
+    background: $dark-gradient;
     background-size: 400% 400%;
     animation: gradientBG 15s ease infinite;
     z-index: -2;
+  }
+
+  &.light-theme {
+    background: $light-bg;
+    color: $dark-color;
+
+    &::before {
+      background: $light-gradient;
+      background-size: 400% 400%;
+    }
   }
 }
 
@@ -35,8 +47,18 @@ body {
   position: relative;
   z-index: 1;
 }
+
+// Theme-aware input styling
 input,
 .mat-input-element,
 input.mat-input-element {
-  color: white !important;
+  color: inherit !important;
+
+  .light-theme & {
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  .dark-theme & {
+    background: rgba(0, 0, 0, 0.2);
+  }
 }

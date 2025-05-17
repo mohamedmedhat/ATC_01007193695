@@ -6,18 +6,26 @@
   role="button"
   aria-pressed="false"
 >
-  <div class="img" style="cursor: pointer;">
+  @if (isBooked) {
+    <button class="cancel-fab" (click)="cancel($event)" aria-label="Cancel booking">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z"/>
+      </svg>
+    </button>
+  }
+
+  <div class="img" style="cursor: pointer">
     <img src="{{ imageUrl }}" alt="{{ imageAlt }}" loading="lazy" />
   </div>
   <div class="content">
-    <h2 style="cursor: pointer;">{{ title }}</h2>
+    <h2 style="cursor: pointer">{{ title }}</h2>
     <p class="desc">{{ description }}</p>
     <div class="dtp">
       <p class="date">{{ date }}</p>
       <p class="price">{{ price }}$</p>
     </div>
     <button (click)="book($event)" [disabled]="isBooked" [class.booked]="isBooked">
-      {{ !isBooked ? 'Book Now' : 'Booked' }}
+      {{ isBooked ? 'Booked' : 'Book Now' }}
     </button>
   </div>
 </div>

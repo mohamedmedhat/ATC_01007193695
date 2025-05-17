@@ -29,7 +29,7 @@ export const EventsActions = createActionGroup({
 
     'Delete Event': props<{ eventId: number }>(),
     'Delete Event Success': props<{ eventId: number }>(),
-    'Delete Event Failure': props<{ error: string, eventId?: number }>(),
+    'Delete Event Failure': props<{ error: string; eventId?: number }>(),
 
     // Booking management
     'Book Event': props<{ request: BookEventRequest }>(),

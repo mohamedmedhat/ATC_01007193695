@@ -2,4 +2,4 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 # Run lint and Prettier on the frontend code
-cd frontend && npm run lint && npm run format:check
+cd frontend && npm run lint:fix && npm run lint && npm run format:check

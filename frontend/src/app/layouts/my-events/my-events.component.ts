@@ -4,11 +4,15 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable, of, map } from 'rxjs';
+import { Observable, of, map, take, withLatestFrom, filter, BehaviorSubject, combineLatest } from 'rxjs';
 import { selectIsLoading, selectError } from '../../store/auth/auth.selector';
 import { EventsActions } from '../../store/events/events.action';
-import { EventResponse, BookEventRequest, GetBookedEventsRequest } from '../../store/events/events.model';
-import { selectEvents, selectUserId } from '../../store/events/events.selector';
+import {
+  EventResponse,
+  BookEventRequest,
+  GetBookedEventsRequest,
+} from '../../store/events/events.model';
+import { selectBookedEvents, selectUserId } from '../../store/events/events.selector';
 
 @Component({
   selector: 'app-my-events',
@@ -17,6 +21,9 @@ import { selectEvents, selectUserId } from '../../store/events/events.selector';
   styleUrl: './my-events.component.scss',
 })
 export class MyEventsComponent implements OnInit {
+  private rawEvents$: Observable<EventResponse[]> = of([]);
+  private cancelledEventIds = new BehaviorSubject<number[]>([]);
+  
   events$: Observable<EventResponse[]> = of([]);
   isLoading$: Observable<boolean> = of(false);
   error$: Observable<string | null> = of(null);
@@ -34,16 +41,33 @@ export class MyEventsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // Initialize observables after store is available
-    this.events$ = this.store.select(selectEvents);
-    this.isLoading$ = this.store.select(selectIsLoading);
-    this.error$ = this.store.select(selectError);
+    this.rawEvents$ = this.store.select(selectBookedEvents);
+    
+    this.events$ = combineLatest([
+      this.rawEvents$,
+      this.cancelledEventIds
+    ]).pipe(
+      map(([events, cancelledIds]) => 
+        events.filter(event => !cancelledIds.includes(Number(event.id)))
+      )
+    );
+
+    this.isLoading$ = this.store.select(selectIsLoading).pipe(
+      withLatestFrom(this.rawEvents$),
+      map(([isLoading, events]) => isLoading && events.length === 0)
+    );
+    
+    this.error$ = this.store.select(selectError).pipe(
+      filter(error => error !== null),
+      take(1)
+    );
+    
     this.userId$ = this.store.select(selectUserId);
     this.loadBookedEvents();
   }
 
   loadBookedEvents(): void {
-    this.userId$.subscribe((userId) => {
+    this.userId$.pipe(take(1)).subscribe((userId) => {
       if (!userId) return;
       const req: GetBookedEventsRequest = {
         userId: userId,
@@ -51,19 +75,39 @@ export class MyEventsComponent implements OnInit {
         size: this.itemsPerPage,
       };
       this.store.dispatch(EventsActions.loadBookedEvents({ request: req }));
-    }).unsubscribe();
+    });
   }
 
   navToDetail(eventId: string): void {
     this.router.navigate(['/events', eventId]);
   }
 
-  bookEvent(eventId: string, userId: string): void {
-    const id = parseInt(eventId);
-    const request: BookEventRequest = { id: id, userId };
-    this.store.dispatch(EventsActions.bookEvent({ request }));
-  }
+  cancelEvent(eventId: string): void {
+    this.userId$.pipe(take(1)).subscribe((userId) => {
+      if (userId) {
+        const eventIdNumber = parseInt(eventId);
+        const request: BookEventRequest = {
+          id: eventIdNumber,
+          userId: userId
+        };
 
+        const currentCancelled = this.cancelledEventIds.value;
+        this.cancelledEventIds.next([...currentCancelled, eventIdNumber]);
+
+        this.store.dispatch(EventsActions.cancelBooking({ request }));
+
+        this.store.dispatch(EventsActions.checkEventBookingStatusSuccess({
+          eventId: request.id,
+          isBooked: false
+        }));
+
+        setTimeout(() => {
+          this.store.dispatch(EventsActions.checkEventBookingStatus({ request }));
+        }, 500);
+      }
+    });
+  }
+  
   get filteredEvents$() {
     return this.events$.pipe(
       map((events) =>
@@ -71,7 +115,12 @@ export class MyEventsComponent implements OnInit {
           const matchesSearch =
             event.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
             event.description.toLowerCase().includes(this.searchQuery.toLowerCase());
-          return matchesSearch;
+          
+          const matchesCategory = 
+            this.selectedCategory === 'All' || 
+            event.category === this.selectedCategory;
+            
+          return matchesSearch && matchesCategory;
         }),
       ),
     );

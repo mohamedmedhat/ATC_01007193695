@@ -37,7 +37,6 @@ export class AuthService {
 
   logout() {
     this.accessToken = null;
-    this.store.dispatch(AuthActions.logout());
     return this.http.post(URLS.AUTH.LOGOUT, {
       withCredentials: true,
     });

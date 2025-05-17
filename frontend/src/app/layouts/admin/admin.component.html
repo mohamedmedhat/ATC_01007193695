@@ -30,20 +30,23 @@
           <div class="form-row">
             <div class="form-group">
               <label for="event-images">Images</label>
-              <input 
-                id="event-images" 
-                type="file" 
-                multiple 
-                (change)="onFileSelected($event)" 
-                accept="image/*" 
-              />
+              <label class="custom-upload">
+                <input
+                  id="event-images"
+                  type="file"
+                  multiple
+                  (change)="onFileSelected($event)"
+                  accept="image/*"
+                />
+                <span class="upload-btn-text">📷 Upload Images</span>
+              </label>
               <div class="image-previews">
                 @for (preview of imagePreviews; track preview) {
                   <div class="preview-item">
                     <img [src]="preview" alt="Image preview" />
-                    <button 
-                      type="button" 
-                      class="remove-btn" 
+                    <button
+                      type="button"
+                      class="remove-btn"
                       (click)="removePreview($index)"
                       aria-label="Remove image"
                     >
@@ -66,13 +69,7 @@
           <div class="form-row">
             <div class="form-group">
               <label for="event-price">Price ($)</label>
-              <input 
-                id="event-price" 
-                type="number" 
-                formControlName="price" 
-                min="0" 
-                step="0.01" 
-              />
+              <input id="event-price" type="number" formControlName="price" min="0" step="0.01" />
               @if (eventForm.get('price')?.invalid && eventForm.get('price')?.touched) {
                 <div class="error-message">
                   @if (eventForm.get('price')?.errors?.['required']) {
@@ -116,21 +113,11 @@
           </div>
 
           <div class="form-actions">
-            <button 
-              type="submit" 
-              class="submit-btn" 
-              [disabled]="!eventForm.valid"
-            >
+            <button type="submit" class="submit-btn" [disabled]="!eventForm.valid">
               {{ isEditing ? 'Update' : 'Create' }}
             </button>
             @if (isEditing) {
-              <button 
-                type="button" 
-                class="cancel-btn" 
-                (click)="resetForm()"
-              >
-                Cancel
-              </button>
+              <button type="button" class="cancel-btn" (click)="resetForm()">Cancel</button>
             }
           </div>
         </form>
@@ -157,7 +144,7 @@
                 <p class="event-description">{{ event.description }}</p>
                 <div class="event-meta">
                   <span class="event-category">{{ event.category }}</span>
-                  <span class="event-price">${{ event.price | number:'1.2-2' }}</span>
+                  <span class="event-price">${{ event.price | number: '1.2-2' }}</span>
                   <span class="event-date">{{ event.date | date }}</span>
                   <!-- <span class="event-status" [class.booked]="event.isBooked">
                     {{ event.isBooked ? 'Booked' : 'Available' }}

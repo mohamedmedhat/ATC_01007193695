@@ -1,29 +1,41 @@
 import { Injectable, signal } from '@angular/core';
 
+export type Theme = 'light' | 'dark';
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ThemeService {
-  private currentTheme = signal<string>('dark');
+  private currentTheme = signal<Theme>('dark');
+  public themeChanged = this.currentTheme.asReadonly();
 
   constructor() {
-    // Initialize from localStorage
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      this.currentTheme.set(savedTheme);
-    }
+    this.initializeTheme();
   }
 
-  setTheme(theme: string) {
+  private initializeTheme(): void {
+    const savedTheme = localStorage.getItem('theme') as Theme;
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+    this.setTheme(initialTheme);
+  }
+
+  setTheme(theme: Theme): void {
     this.currentTheme.set(theme);
-    document.body.className = theme === 'dark' ? '' : 'light-theme';
+    localStorage.setItem('theme', theme);
+    this.updateBodyClasses(theme);
   }
 
-  getTheme() {
+  private updateBodyClasses(theme: Theme): void {
+    document.body.classList.remove('light-theme', 'dark-theme');
+    document.body.classList.add(`${theme}-theme`);
+  }
+
+  getTheme(): Theme {
     return this.currentTheme();
   }
 
-  toggleTheme() {
+  toggleTheme(): void {
     const newTheme = this.currentTheme() === 'dark' ? 'light' : 'dark';
     this.setTheme(newTheme);
   }

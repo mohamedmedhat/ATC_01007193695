@@ -7,38 +7,29 @@
         </option>
       </select>
 
-      <input
-        type="text"
-        [(ngModel)]="searchQuery"
-        (input)="onFilterChange()"
-        placeholder="Search events..."
-        class="search-input"
-      />
+      <input type="text" [(ngModel)]="searchQuery" (input)="onFilterChange()" placeholder="Search events..."
+        class="search-input" />
     </div>
   </div>
 
   @if (isLoading$ | async) {
-    <div class="loading-spinner">Loading events...</div>
+  <div class="loading-spinner">Loading events...</div>
   } @else {
-    <div class="cards-container">
-      @for (event of paginatedEvents$ | async; track event.id) {
-        <app-card
-          [imageUrl]="event.images[0].url"
-          [imageAlt]="event.name"
-          [title]="event.name"
-          [description]="event.description"
-          [price]="event.price"
-          [date]="event.date"
-          [category]="event.category"
-          [eventId]="event.id"
-          (navToDetail)="navToDetail($event)"
-        >
-        </app-card>
-      }
-    </div>
+  <div class="cards-container">
+    @for (event of events$ | async; track event.id) {
+    <app-card [imageUrl]="event.images[0].url" [imageAlt]="event.name" [title]="event.name"
+      [description]="event.description" [price]="event.price" [date]="event.date" [category]="event.category"
+      [eventId]="event.id" (navToDetail)="navToDetail($event)" (cancelEvent)="cancelEvent(event.id)" [isBooked]="true">
+    </app-card>
+    }
+  </div>
   }
 
   @if (error$ | async; as error) {
-    <div class="error-message">{{ error }}</div>
+  <div class="error-message">{{ error }}</div>
   }
 </div>
+
+@if ((events$ | async)?.length === 0) {
+<div class="empty-state">You haven't booked any events yet.</div>
+}

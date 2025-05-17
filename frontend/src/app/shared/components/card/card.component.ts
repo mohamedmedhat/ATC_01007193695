@@ -18,11 +18,16 @@ export class CardComponent {
   @Input() category: string = '';
   @Output() navToDetail = new EventEmitter<string>();
   @Output() bookEvent = new EventEmitter<string>();
-
+  @Output() cancelEvent = new EventEmitter<string>();
 
   book(event: MouseEvent) {
     event.stopPropagation();
     this.bookEvent.emit(this.eventId);
+  }
+
+  cancel(event: MouseEvent) {
+    event.stopPropagation();
+    this.cancelEvent.emit(this.eventId);
   }
 
   nav(event: Event) {

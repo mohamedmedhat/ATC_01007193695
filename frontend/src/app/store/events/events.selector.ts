@@ -36,14 +36,11 @@ export const selectBookingStatus = createSelector(
   (bookingStatus) => bookingStatus,
 );
 
-export const selectUserId = createSelector(
-  selectAuthState,
-  (state) => state.user?.id
-);
+export const selectUserId = createSelector(selectAuthState, (state) => state.user?.id);
 
 export const selectUserName = createSelector(
   selectAuthState,
-  (state) => state.user?.name || state.user?.email
+  (state) => state.user?.name || state.user?.email,
 );
 
 export const {

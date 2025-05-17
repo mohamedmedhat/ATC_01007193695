@@ -14,7 +14,7 @@ import {
   providedIn: 'root',
 })
 export class EventsService {
-  constructor(private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient) {}
 
   getAllEvents(req: GetEventsRequest): Observable<EventResponse[]> {
     let params = new HttpParams().set('page', req.page.toString()).set('size', req.size.toString());
