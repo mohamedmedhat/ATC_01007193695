@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.areeb.eventbooking.event.Event;
 import com.areeb.eventbooking.event.EventMapper;
@@ -29,14 +30,16 @@ public class EventQueryServiceImpl implements EventQueryService {
                 .orElseThrow(() -> new EventNotFoundException("event with id: " + id + " not found"));
     }
 
-    @Cacheable(value="event", key="#id")
+    @Transactional(readOnly = true)
+    @Cacheable(value = "event", key = "#id")
     @Override
     public EventResponseDto getEvent(Long id) {
         Event event = getEventById(id);
         return this.eventMapper.toEventResponseDto(event);
     }
 
-    @Cacheable(value="events", key="#category + '-' + #page + '-' + #size")
+    @Transactional(readOnly = true)
+    @Cacheable(value = "events", key = "#category + '-' + #page + '-' + #size")
     @Override
     public List<EventResponseDto> getEvents(String category, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -44,7 +47,8 @@ public class EventQueryServiceImpl implements EventQueryService {
         return this.eventMapper.toListEventResponseDto(events);
     }
 
-    @Cacheable(value="userBookedEvents", key="#userId + '-' + #page + '-' + #size")
+    @Transactional(readOnly = true)
+    @Cacheable(value = "userBookedEvents", key = "#userId + '-' + #page + '-' + #size")
     @Override
     public List<EventResponseDto> getUserBookedEvents(UUID userId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);

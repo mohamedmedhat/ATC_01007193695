@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.areeb.eventbooking.user.User;
 import com.areeb.eventbooking.user.UserRepository;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class UserQueryServiceImpl implements UserQueryService {
     private final UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     @Cacheable(value = "user", key = "#id")
     @Override
     public User getUser(UUID id) {
