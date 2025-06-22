@@ -3,6 +3,12 @@ spring:
     name: eventBooking
   datasource:
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 30000
+      connection-timeout: 30000
+      max-lifetime: 1800000
   profiles:
     active : dev
   cache:

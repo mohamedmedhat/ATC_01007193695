@@ -11,9 +11,11 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
-        Event findByIdAndUserId(Long id, UUID user);
+        @Query("SELECT e FROM Event e WHERE e.id = :id AND e.user.id = :user")
+        Event findByIdAndUserId(@Param("id") Long id, @Param("user") UUID user);
 
-        Page<Event> findAllByUserId(UUID user, Pageable pageable);
+        @Query("SELECT e FROM Event e WHERE e.user.id = :user")
+        Page<Event> findAllByUserId(@Param("user") UUID user, Pageable pageable);
 
         @Query("SELECT e FROM Event e WHERE " +
                         "(:category IS NULL OR :category = '' OR e.category = :category)")
