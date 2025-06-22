@@ -2,6 +2,9 @@ package com.areeb.eventbooking.shared.classes;
 
 import java.time.LocalDateTime;
 
+import lombok.Getter;
+
+@Getter
 public class ErrorResponseDto {
     private int status;
     private String message;
