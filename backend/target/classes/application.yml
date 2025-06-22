@@ -1,6 +1,8 @@
 spring:
   application:
     name: eventBooking
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
   datasource:
     driver-class-name: org.postgresql.Driver
     hikari:
@@ -23,3 +25,4 @@ server:
     enabled: true
     mime-types: text/html, text/xml, text/plain, text/css, text/javascript, application/javascript, application/json
     min-response-size: 1024
+  shutdown: graceful
