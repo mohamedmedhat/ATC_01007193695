@@ -236,7 +236,6 @@
   gap: 20px;
 }
 
-
 .event-card {
   background: $glass-background;
   backdrop-filter: blur($blur-effect);
@@ -373,9 +372,6 @@
   }
 }
 
-
-
-
 .preview-item {
   transition: transform 0.2s ease;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
@@ -384,8 +380,6 @@
     transform: scale(1.05);
   }
 }
-
-
 
 .event-card {
   opacity: 0;
@@ -408,7 +402,6 @@
   }
 }
 
-
 .custom-upload {
   display: inline-block;
   background: linear-gradient(135deg, $primary-color, darken($primary-color, 10%));
@@ -427,7 +420,7 @@
     background: lighten($primary-color, 5%);
   }
 
-  input[type="file"] {
+  input[type='file'] {
     position: absolute;
     left: 0;
     top: 0;

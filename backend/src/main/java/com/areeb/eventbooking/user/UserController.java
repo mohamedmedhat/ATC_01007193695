@@ -11,6 +11,7 @@ import com.areeb.eventbooking.user.dto.request.LoginRequestDto;
 import com.areeb.eventbooking.user.dto.request.RegisterRequestDto;
 import com.areeb.eventbooking.user.dto.response.LoginResponseDto;
 import com.areeb.eventbooking.user.dto.response.RegisterResponseDto;
+import com.areeb.eventbooking.user.service.auth.UserAuthService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,28 +23,28 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RestController
 @RequestMapping("api/v1/users/")
 public class UserController {
-    private final UserService userService;
+    private final UserAuthService userAuthService;
 
     @PostMapping("auth/login")
     public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginRequestDto request) {
-        return ResponseEntity.ok(userService.login(request));
+        return ResponseEntity.ok(userAuthService.login(request));
     }
 
     @PostMapping("auth/register")
     public ResponseEntity<RegisterResponseDto> register(@Valid @RequestBody RegisterRequestDto request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.register(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(userAuthService.register(request));
     }
 
     @PostMapping("auth/logout")
     public ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response) {
-        userService.logout(request, response);
+        userAuthService.logout(request, response);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PostMapping("auth/refresh-token")
     public ResponseEntity<RefreshTokenResponseDto> refreshToken(HttpServletRequest request,
             HttpServletResponse response) {
-        return ResponseEntity.ok(this.userService.refreshToken(request, response));
+        return ResponseEntity.ok(this.userAuthService.refreshToken(request, response));
     }
 
 }

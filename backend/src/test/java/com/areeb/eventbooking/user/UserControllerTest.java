@@ -5,6 +5,7 @@ import com.areeb.eventbooking.user.dto.request.LoginRequestDto;
 import com.areeb.eventbooking.user.dto.request.RegisterRequestDto;
 import com.areeb.eventbooking.user.dto.response.LoginResponseDto;
 import com.areeb.eventbooking.user.dto.response.RegisterResponseDto;
+import com.areeb.eventbooking.user.service.auth.UserAuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,9 +13,11 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.testcontainers.utility.TestcontainersConfiguration;
 
 import java.util.Set;
 import java.util.UUID;
@@ -24,6 +27,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@Import(TestcontainersConfiguration.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 class UserControllerTest {
@@ -35,7 +39,10 @@ class UserControllerTest {
     private ObjectMapper objectMapper;
 
     @MockitoBean
-    private UserService userService;
+    private UserAuthService userService;
+
+    @MockitoBean
+    private UserRepository userRepository;
 
     private UUID id;
     private LoginRequestDto request;
@@ -57,9 +64,9 @@ class UserControllerTest {
         Mockito.when(userService.login(request)).thenReturn(loginResponse);
 
         mockMvc.perform(post("/api/v1/users/auth/login")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(id.toString()))
                 .andExpect(jsonPath("$.token").value("kwk"))
@@ -73,9 +80,9 @@ class UserControllerTest {
         Mockito.when(userService.register(registerRequest)).thenReturn(registerResponse);
 
         mockMvc.perform(post("/api/v1/users/auth/register")
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(registerRequest)))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(registerRequest)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(id.toString()))
                 .andExpect(jsonPath("$.name").value("Areeb"))

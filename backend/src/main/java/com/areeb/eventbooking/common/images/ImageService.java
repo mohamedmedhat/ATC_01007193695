@@ -2,9 +2,13 @@ package com.areeb.eventbooking.common.images;
 
 import java.io.IOException;
 import java.util.Base64;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.areeb.eventbooking.event.Event;
 
 import io.imagekit.sdk.ImageKit;
 import io.imagekit.sdk.exceptions.BadRequestException;
@@ -59,5 +63,20 @@ public class ImageService {
         if (contentType == null || !contentType.startsWith("image/")) {
             throw new IllegalArgumentException("Invalid image file type");
         }
+    }
+
+    public Set<Image> toImageEntity(Set<MultipartFile> files, Event event)
+            throws IOException, InternalServerException, BadRequestException,
+            UnknownException, ForbiddenException, TooManyRequestsException, UnauthorizedException {
+        Set<Image> images = new HashSet<>();
+        for (MultipartFile file : files) {
+            this.validateImage(file);
+            String url = uploadImage(file);
+            Image img = new Image();
+            img.setUrl(url);
+            img.setEvent(event);
+            images.add(img);
+        }
+        return images;
     }
 }

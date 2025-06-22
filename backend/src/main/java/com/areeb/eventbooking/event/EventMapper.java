@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @Component
 public class EventMapper {
 
-    Event toEvent(EventRequestDto request, Set<Image> images) {
+    public Event toEvent(EventRequestDto request, Set<Image> images) {
         Event event = new Event();
         event.setName(request.name());
         event.setDescription(request.description());
@@ -31,7 +31,7 @@ public class EventMapper {
         return event;
     }
 
-    Event toUpdatedEvent(Event event, EventRequestDto request, Set<Image> images) {
+    public Event toUpdatedEvent(Event event, EventRequestDto request, Set<Image> images) {
         event.setName(request.name());
         event.setDescription(request.description());
         event.setCategory(request.category());

@@ -9,7 +9,11 @@ import { BookEventRequest, EventResponse, GetEventsRequest } from '../../store/e
 import { Store } from '@ngrx/store';
 import { selectIsLoading, selectError } from '../../store/auth/auth.selector';
 import { EventsActions } from '../../store/events/events.action';
-import { selectBookingStatus, selectEvents, selectUserId } from '../../store/events/events.selector';
+import {
+  selectBookingStatus,
+  selectEvents,
+  selectUserId,
+} from '../../store/events/events.selector';
 
 @Component({
   selector: 'app-events',
@@ -38,7 +42,7 @@ export class EventsComponent implements OnInit {
   constructor(
     private store: Store,
     private router: Router,
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.events$ = this.store.select(selectEvents);
@@ -78,23 +82,23 @@ export class EventsComponent implements OnInit {
     this.router.navigate(['/events', eventId]);
   }
 
-// In your EventsComponent
-bookEvent(eventId: string): void {
-  this.userId$.pipe(take(1)).subscribe((userId) => {
-    if (userId) {
-      const request: BookEventRequest = {
-        id: parseInt(eventId),
-        userId: userId,
-      };
-      
-      // Dispatch check status first
-      this.store.dispatch(EventsActions.checkEventBookingStatus({ request }));
-      
-      // Then book if needed
-      this.store.dispatch(EventsActions.bookEvent({ request }));
-    }
-  });
-}
+  // In your EventsComponent
+  bookEvent(eventId: string): void {
+    this.userId$.pipe(take(1)).subscribe((userId) => {
+      if (userId) {
+        const request: BookEventRequest = {
+          id: parseInt(eventId),
+          userId: userId,
+        };
+
+        // Dispatch check status first
+        this.store.dispatch(EventsActions.checkEventBookingStatus({ request }));
+
+        // Then book if needed
+        this.store.dispatch(EventsActions.bookEvent({ request }));
+      }
+    });
+  }
 
   resetBookingState(): void {
     setTimeout(() => {
@@ -107,9 +111,9 @@ bookEvent(eventId: string): void {
   }
 
   isEventBooked(eventId: string): Observable<boolean> {
-    return this.store.select(selectBookingStatus).pipe(
-      map(bookingStatus => bookingStatus[parseInt(eventId)] || false)
-    );
+    return this.store
+      .select(selectBookingStatus)
+      .pipe(map((bookingStatus) => bookingStatus[parseInt(eventId)] || false));
   }
 
   get categories$(): Observable<string[]> {

@@ -8,8 +8,13 @@
         </option>
       </select>
 
-      <input type="text" [(ngModel)]="searchQuery" (input)="onFilterChange()" placeholder="Search events..."
-        class="search-input" />
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        (input)="onFilterChange()"
+        placeholder="Search events..."
+        class="search-input"
+      />
     </div>
 
     <div class="pagination-info" *ngIf="hasLoaded$ | async">
@@ -18,50 +23,71 @@
   </div>
 
   @if (isLoading$ | async) {
-  <div class="loading-spinner">Loading events...</div>
+    <div class="loading-spinner">Loading events...</div>
   } @else if (hasLoaded$ | async) {
-  <div class="cards-container">
-    <app-card *ngFor="let event of events$ | async; trackBy: trackByEventId" [eventId]="event.id" [title]="event.name"
-      [description]="event.description" [imageUrl]="event.images[0].url || ''" [imageAlt]="event.name"
-      [date]="event.date" [price]="event.price" [category]="event.category"
-      [isBooked]="(isEventBooked(event.id) | async) || false" (navToDetail)="navToDetail($event)"
-      (bookEvent)="bookEvent($event)"></app-card>
-  </div>
+    <div class="cards-container">
+      <app-card
+        *ngFor="let event of events$ | async; trackBy: trackByEventId"
+        [eventId]="event.id"
+        [title]="event.name"
+        [description]="event.description"
+        [imageUrl]="event.images[0].url || ''"
+        [imageAlt]="event.name"
+        [date]="event.date"
+        [price]="event.price"
+        [category]="event.category"
+        [isBooked]="(isEventBooked(event.id) | async) || false"
+        (navToDetail)="navToDetail($event)"
+        (bookEvent)="bookEvent($event)"
+      ></app-card>
+    </div>
   }
 
   @if (error$ | async; as error) {
-  <div class="error-message">{{ error }}</div>
+    <div class="error-message">{{ error }}</div>
   }
 
   @if ((isLoading$ | async) === false && (hasLoaded$ | async) && !(events$ | async)?.length) {
-  <div class="no-events-message">No events found matching your criteria.</div>
+    <div class="no-events-message">No events found matching your criteria.</div>
   }
 
   @if ((hasLoaded$ | async) && (events$ | async)?.length) {
-  <div class="pagination-container">
-    <button class="pagination-button prev-next" (click)="previousPage()" [disabled]="currentPage === 1">
-      Previous
-    </button>
-
-    <div class="page-numbers">
-      @for (page of getPageNumbers(); track page) {
-      <button class="pagination-button" [class.active]="page === currentPage" (click)="goToPage(page)">
-        {{ page }}
+    <div class="pagination-container">
+      <button
+        class="pagination-button prev-next"
+        (click)="previousPage()"
+        [disabled]="currentPage === 1"
+      >
+        Previous
       </button>
-      }
-    </div>
 
-    <button class="pagination-button prev-next" (click)="nextPage()" [disabled]="currentPage >= totalPages">
-      Next
-    </button>
-  </div>
+      <div class="page-numbers">
+        @for (page of getPageNumbers(); track page) {
+          <button
+            class="pagination-button"
+            [class.active]="page === currentPage"
+            (click)="goToPage(page)"
+          >
+            {{ page }}
+          </button>
+        }
+      </div>
+
+      <button
+        class="pagination-button prev-next"
+        (click)="nextPage()"
+        [disabled]="currentPage >= totalPages"
+      >
+        Next
+      </button>
+    </div>
   }
 </div>
 
 @if (isLoading$ | async) {
-<div class="cards-container">
-  @for (i of [1, 2, 3, 4]; track i) {
-  <div class="card-skeleton"></div>
-  }
-</div>
+  <div class="cards-container">
+    @for (i of [1, 2, 3, 4]; track i) {
+      <div class="card-skeleton"></div>
+    }
+  </div>
 }

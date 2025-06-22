@@ -1,4 +1,4 @@
-package com.areeb.eventbooking.shared.configuration;
+package com.areeb.eventbooking.common.configuration;
 
 import java.util.List;
 
