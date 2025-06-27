@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
-        @Query("SELECT e FROM Event e WHERE e.id = :id AND e.user.id = :user")
+        @Query("SELECT e FROM Event e LEFT JOIN FETCH e.images WHERE e.id = :id AND e.user.id = :user")
         Event findByIdAndUserId(@Param("id") Long id, @Param("user") UUID user);
 
         @Query("SELECT e FROM Event e WHERE e.user.id = :user")

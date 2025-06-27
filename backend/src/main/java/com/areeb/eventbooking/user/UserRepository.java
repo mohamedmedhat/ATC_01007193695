@@ -14,6 +14,9 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("SELECT u FROM User u WHERE u.email = :email")
     Optional<User> findByEmail(@Param("email") String email);
 
+    @Query("SELECT u FROM User u LEFT JOIN FETCH u.event WHERE u.email = :email")
+    Optional<User> findByEmailWithEvents(@Param("email") String email);
+
     @Query("SELECT COUNT(u) FROM User u WHERE u.email = :email")
     long countByEmail(@Param("email") String email);
 }

@@ -52,8 +52,8 @@ public class EventQueryServiceTest {
                 "Sample Event",
                 "This is a sample event description.",
                 "Music",
-                LocalDate.of(2023, 10, 1),
                 "Sample Venue",
+                LocalDate.of(2023, 10, 1),
                 BigDecimal.valueOf(100.00),
                 Set.of()
                 , null, LocalDateTime.now(), LocalDateTime.now());
@@ -63,8 +63,8 @@ public class EventQueryServiceTest {
                 "Sample Event",
                 "This is a sample event description.",
                 "Music",
-                LocalDate.of(2023, 10, 1),
                 "Sample Venue",
+                LocalDate.of(2023, 10, 1),
                 BigDecimal.valueOf(100.00),
                 Set.of(new ImageResponseDto(1L, "Image 1")));
     }

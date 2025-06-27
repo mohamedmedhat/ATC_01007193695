@@ -49,8 +49,8 @@ public class EventMapper {
                 event.getName(),
                 event.getDescription(),
                 event.getCategory(),
-                event.getDate(),
                 event.getVenue(),
+                event.getDate(),
                 event.getPrice(),
                 event.getImages().stream()
                         .map(img -> new ImageResponseDto(img.getId(), img.getUrl()))
@@ -64,8 +64,8 @@ public class EventMapper {
                         event.getName(),
                         event.getDescription(),
                         event.getCategory(),
-                        event.getDate(),
                         event.getVenue(),
+                        event.getDate(),
                         event.getPrice(),
                         event.getImages().stream()
                                 .map(img -> new ImageResponseDto(img.getId(), img.getUrl()))

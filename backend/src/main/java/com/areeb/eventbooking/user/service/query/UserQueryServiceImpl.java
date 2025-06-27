@@ -32,7 +32,7 @@ public class UserQueryServiceImpl implements UserQueryService {
 
     @Override
     public User getUserByEmail(String email) {
-        return this.userRepository.findByEmail(email)
+        return this.userRepository.findByEmailWithEvents(email)
                 .orElseThrow(() -> new UserNotFoundException("user with email" + email + " not found"));
     }
 

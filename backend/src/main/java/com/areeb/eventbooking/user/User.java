@@ -19,7 +19,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table(name = "users", indexes = {
-        @Index(name = "user_id_idx", columnList = "id"),
         @Index(name = "user_email_idx", columnList = "email")
 })
 public class User {
@@ -35,9 +34,9 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<Event> event = new HashSet<>();
-    
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 }

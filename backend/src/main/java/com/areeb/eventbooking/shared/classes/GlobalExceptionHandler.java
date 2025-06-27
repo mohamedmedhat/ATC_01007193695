@@ -5,8 +5,6 @@ import java.time.LocalDateTime;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.areeb.eventbooking.shared.classes.ErrorResponseDto;
-
 import com.areeb.eventbooking.event.exception.EventAlreadyBookedException;
 import com.areeb.eventbooking.event.exception.EventNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
