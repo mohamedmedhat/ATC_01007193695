@@ -21,6 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.areeb.eventbooking.event.dto.request.EventRequestDto;
 import com.areeb.eventbooking.event.dto.response.BookEventResponseDto;
 import com.areeb.eventbooking.event.dto.response.EventResponseDto;
+import com.areeb.eventbooking.event.service.booking.EventBookingService;
+import com.areeb.eventbooking.event.service.command.EventCommandService;
+import com.areeb.eventbooking.event.service.query.EventQueryService;
 
 import io.imagekit.sdk.exceptions.BadRequestException;
 import io.imagekit.sdk.exceptions.ForbiddenException;
@@ -35,68 +38,72 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/events")
 @RequiredArgsConstructor
 public class EventController {
-    private final EventService eventService;
+    private final EventCommandService eventCommandService;
+    private final EventQueryService eventQueryService;
+    private final EventBookingService eventBookingService;
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<EventResponseDto> createEvent(@ModelAttribute @Valid EventRequestDto request)
             throws IOException, InternalServerException, BadRequestException, UnknownException, ForbiddenException,
             TooManyRequestsException, UnauthorizedException {
-        EventResponseDto response = eventService.createEvent(request);
+        EventResponseDto response = eventCommandService.createEvent(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<EventResponseDto> getEvent(@PathVariable Long id) {
-        EventResponseDto response = eventService.getEvent(id);
+        EventResponseDto response = eventQueryService.getEvent(id);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public ResponseEntity<List<EventResponseDto>> getEvents(@RequestParam(required = false) String category, @RequestParam int page,
+    public ResponseEntity<List<EventResponseDto>> getEvents(@RequestParam(required = false) String category,
+            @RequestParam int page,
             @RequestParam int size) {
-        List<EventResponseDto> response = eventService.getEvents(category, page, size);
+        List<EventResponseDto> response = eventQueryService.getEvents(category, page, size);
         return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping(path = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<EventResponseDto> updateEvent(@PathVariable Long id, @ModelAttribute  @Valid EventRequestDto request)
+    public ResponseEntity<EventResponseDto> updateEvent(@PathVariable Long id,
+            @ModelAttribute @Valid EventRequestDto request)
             throws IOException, InternalServerException, BadRequestException, UnknownException, ForbiddenException,
             TooManyRequestsException, UnauthorizedException {
-        EventResponseDto response = eventService.updateEvent(id, request);
+        EventResponseDto response = eventCommandService.updateEvent(id, request);
         return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
-        eventService.deleteEvent(id);
+        eventCommandService.deleteEvent(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/book")
     public ResponseEntity<BookEventResponseDto> bookEvent(@PathVariable Long id, @RequestParam UUID userId) {
-        BookEventResponseDto response = eventService.bookEvent(id, userId);
+        BookEventResponseDto response = eventBookingService.bookEvent(id, userId);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/{id}/cancel")
     public ResponseEntity<BookEventResponseDto> cancelBooking(@PathVariable Long id, @RequestParam UUID userId) {
-        BookEventResponseDto response = eventService.cancelBooking(id, userId);
+        BookEventResponseDto response = eventBookingService.cancelBooking(id, userId);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<EventResponseDto>> getUserBookedEvents(@PathVariable UUID userId,
             @RequestParam int page, @RequestParam int size) {
-        List<EventResponseDto> response = eventService.getUserBookedEvents(userId, page, size);
+        List<EventResponseDto> response = eventQueryService.getUserBookedEvents(userId, page, size);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{eventId}/isBooked")
     public ResponseEntity<Boolean> isEventBooked(@PathVariable Long eventId, @RequestParam UUID userId) {
-        boolean isBooked = eventService.isEventBooked(eventId, userId);
+        boolean isBooked = eventQueryService.isEventBooked(eventId, userId);
         return ResponseEntity.ok(isBooked);
     }
 

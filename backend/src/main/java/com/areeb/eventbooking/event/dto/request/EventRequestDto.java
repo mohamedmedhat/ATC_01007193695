@@ -7,12 +7,12 @@ import java.util.Set;
 import org.springframework.web.multipart.MultipartFile;
 
 public record EventRequestDto(
-        String name,
-        String description,
-        String category,
-        LocalDate date,
-        String venue,
-        BigDecimal price,
-        Set<MultipartFile> images) {
+                String name,
+                String description,
+                String category,
+                String venue,
+                LocalDate date,
+                BigDecimal price,
+                Set<MultipartFile> images) {
 
 }

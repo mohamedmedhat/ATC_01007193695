@@ -243,15 +243,15 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     z-index: 2;
     transition: all 0.3s ease;
-    
+
     &:hover {
       background-color: #d32f2f;
       transform: scale(1.1);
     }
-    
+
     svg {
       width: 20px;
       height: 20px;

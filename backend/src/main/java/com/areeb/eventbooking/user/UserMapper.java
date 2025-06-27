@@ -9,7 +9,7 @@ import com.areeb.eventbooking.user.dto.response.RegisterResponseDto;
 
 @Component
 public class UserMapper {
-    RegisterResponseDto toRegisterResponseDto(User user) {
+    public RegisterResponseDto toRegisterResponseDto(User user) {
         return new RegisterResponseDto(
                 user.getId(),
                 user.getName(),
@@ -17,7 +17,7 @@ public class UserMapper {
                 user.getRoles());
     }
 
-    LoginResponseDto toLoginResponseDto(User user, String access_token, String refresh_token) {
+    public LoginResponseDto toLoginResponseDto(User user, String access_token, String refresh_token) {
         return new LoginResponseDto(
                 user.getId(),
                 user.getName(),
@@ -27,7 +27,7 @@ public class UserMapper {
                 refresh_token);
     }
 
-    User toUser(RegisterRequestDto data, String encryptedPassword) {
+    public User toUser(RegisterRequestDto data, String encryptedPassword) {
         RegisterRequestDto sanitizedData = RegisterRequestDto.sanitize(data);
         User user = new User();
         user.setName(sanitizedData.name());
