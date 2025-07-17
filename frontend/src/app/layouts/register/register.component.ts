@@ -8,12 +8,10 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { filter, take } from 'rxjs';
 import { AuthActions } from '../../store/auth/auth.action';
 import {
   selectError,
   selectIsLoading,
-  selectIsAuthenticated,
 } from '../../store/auth/auth.selector';
 import { RegisterRequest } from '../../store/auth/auth.model';
 
@@ -55,14 +53,8 @@ export class RegisterComponent {
     const req: RegisterRequest = { name, email, password };
     this.store.dispatch(AuthActions.register({ req }));
 
-    this.store
-      .select(selectIsAuthenticated)
-      .pipe(
-        filter((isAuth) => isAuth),
-        take(1),
-      )
-      .subscribe(() => {
-        this.router.navigate(['/auth/login']);
-      });
+    this.store.select(AuthActions.registerSuccess).subscribe(() => {
+      this.router.navigate(['/auth/login']);
+    });
   }
 }

@@ -14,7 +14,7 @@
         <mat-label>Email</mat-label>
         <input matInput formControlName="email" placeholder="Email address" />
         <mat-icon matSuffix>mail</mat-icon>
-        <mat-error *ngIf="form.get('email')?.hasError('email')"> Enter a valid email </mat-error>
+        <mat-error *ngIf="form.get('email')?.invalid && form.get('email')?.touched"> Enter a valid email </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="full-width">
@@ -26,7 +26,7 @@
           placeholder="Choose a password"
         />
         <mat-icon matSuffix>lock</mat-icon>
-        <mat-error *ngIf="form.get('password')?.hasError('minlength')">
+        <mat-error *ngIf="form.get('password')?.hasError('minlength') && form.get('password')?.touched">
           Minimum 6 characters
         </mat-error>
       </mat-form-field>
